@@ -1,0 +1,199 @@
+"//Schema_Type": "Tournament",
+{
+  "type": "object",
+  "properties": {
+    "DATA": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "LEAGUE_NAME": {
+            "type": "string"
+          },
+          "COUNTRY_NAME": {
+            "type": "string"
+          },
+          "COUNTRY_ID": {
+            "type": "integer"
+          },
+          "ACTUAL_TOURNAMENT_SEASON_ID": {
+            "type": "string"
+          },
+          "GROUP_ID": {
+            "type": "string"
+          },
+          "SEASON_ID": {
+            "type": "integer"
+          },
+          "TEMPLATE_ID": {
+            "type": "string"
+          },
+          "STAGES": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "STAGE_ID": {
+                  "type": "string"
+                },
+                "STAGE_NAME": {
+                  "type": "string"
+                },
+                "OUT": {
+                  "type": "string"
+                }
+              },
+              "required": ["STAGE_ID", "STAGE_NAME", "OUT"]
+            }
+          }
+        },
+        "required": ["LEAGUE_NAME", "COUNTRY_NAME", "COUNTRY_ID", "ACTUAL_TOURNAMENT_SEASON_ID", "GROUP_ID", "SEASON_ID", "TEMPLATE_ID", "STAGES"]
+      }
+    }
+  },
+  "required": ["DATA"]
+}
+
+
+"//Schema_Type": "Player",
+{
+  "type": "object",
+  "properties": {
+    "DATA": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "SHORT_NAME": {
+          "type": "string"
+        },
+        "GENDER_ID": {
+          "type": "integer"
+        },
+        "COUNTRY_NAME": {
+          "type": "string"
+        },
+        "IMAGE_PATH": {
+          "type": "string",
+          "format": "uri"
+        },
+        "IMAGE_WIDTH": {
+          "type": "string"
+        },
+        "IMAGE_ID": {
+          "type": "string"
+        },
+        "NAME": {
+          "type": "string"
+        },
+        "BIRTHDAY_TIME": {
+          "type": "string"
+        },
+        "RANK_TEXT": {
+          "type": "string"
+        }
+      },
+      "required": ["ID", "SHORT_NAME", "GENDER_ID", "COUNTRY_NAME", "IMAGE_PATH", "IMAGE_WIDTH", "IMAGE_ID", "NAME", "BIRTHDAY_TIME", "RANK_TEXT"]
+    }
+  },
+  "required": ["DATA"]
+}
+
+"//Schema_Type": "Match",
+{
+  "type": "object",
+  "properties": {
+    "VALUE": {
+      "type": "string"
+    },
+    "EVENT_ID": {
+      "type": "string"
+    },
+    "TOURNAMENT_ID": {
+      "type": "string"
+    },
+    "BLOCKS": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "LEG": {
+            "type": "integer"
+          },
+          "SET": {
+            "type": "integer"
+          },
+          "SERVICE_PARTICIPANT_TYPE": {
+            "type": "integer"
+          },
+          "SERVICE_PARTICIPANT_ID": {
+            "type": "string"
+          },
+          "SERVICE_LOST_PARTICIPANT_TYPE": {
+            "type": "integer"
+          },
+          "MAIN_SCORE": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ID": {
+                  "type": "string"
+                },
+                "TEAM_ORDER": {
+                  "type": "integer"
+                },
+                "VALUE": {
+                  "type": "string"
+                },
+                "IS_CHANGED": {
+                  "type": "integer"
+                }
+              },
+              "required": ["ID", "TEAM_ORDER", "VALUE"]
+            }
+          },
+          "SCORE_HISTORY": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "TYPE": {
+                  "type": "string"
+                },
+                "ITEMS": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ID": {
+                        "type": "string"
+                      },
+                      "TYPE": {
+                        "type": "string"
+                      },
+                      "TEAM_ORDER": {
+                        "type": "integer"
+                      },
+                      "VALUE": {
+                        "type": "string"
+                      },
+                      "IS_CHANGED": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": ["ID", "TYPE", "TEAM_ORDER", "VALUE"]
+                  }
+                }
+              },
+              "required": ["TYPE", "ITEMS"]
+            }
+          }
+        },
+        "required": ["LEG", "SET", "SERVICE_PARTICIPANT_TYPE", "SERVICE_PARTICIPANT_ID", "SERVICE_LOST_PARTICIPANT_TYPE", "MAIN_SCORE", "SCORE_HISTORY"]
+      }
+    }
+  },
+  "required": ["VALUE", "EVENT_ID", "TOURNAMENT_ID", "BLOCKS"]
+}
