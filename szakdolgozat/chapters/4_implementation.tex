@@ -1,5 +1,136 @@
-\Chapter{Megvalósítás}
+\Chapter{Implementáció}
+\Section{A frontend megvalósítása}
+\subsection{Oldalak kapcsolódása - Routing}
+Ebben a pontban szeretném szemléltetni az alkalmazás egyes oldalai közötti kapcsolódást. Az olyan adatmodelleknél mint a mérkőzések, a versenyek és a játékosok, az oldalakat két részre osztjuk, ugyanis egyes oldalakon többet is el tudunk érni közülük, míg az adatlapjaik az azonosítójuk segítségével érhető el.
+\begin{cpp}
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'search/:searchTerm', component: AllPlayersComponent },
+  { path: 'players', component: AllPlayersComponent },
+  { path: 'players/:id', component: PlayerPageComponent },
+  { path: 'tournaments', component: TournamentsComponent },
+  { path: 'matches/:id', component: MatchPageComponent },
+  { path: 'login', component: LoginPageComponent },
+  { path: 'register', component: RegisterPageComponent },
+  { path: 'tournaments/new', component: NewTournamentPageComponent },
+  { path: 'tournament/:id', component: TournamentPageComponent },
+  { path: 'matches/:id/onGoing', component: DartsPartyPageComponent },
+];
+\end{cpp}
+Az itt meghatározott útvonalak határozzák meg, hogy az alkalmazás komponensei, oldalai milyen címen érhetőek el az alkalmazásból.
+\subsection{Szolgáltatások}
+\subsection{Az alkalmazás komponensei}
+\Section{A backend megvalósítása}
+\subsection{Versenyek létrehozása}
+Egy versenyt a regisztrációhoz hasonlóan egy űrlap kitöltésével hozhatjuk létre. Miután kitöltöttük az űrlapot, a backend segítségével az itt megadott adatokból jön létre az új verseny az adatbázisban, azonban egy verseny létrehozásával, nem csupán egy versenyt hozunk létre, hanem létrejönnek a versenyeken résztvevő játékosok is és elkészül az első forduló sorsolása, vagyis a létrejönnek az első mérkőzések is. Ez azért lehetséges, mivel a játékosok és a mérkőzések is csupa olyan rekorddal rendelkeznek, amelyek a versenyből származtatottak. Így a játékosok és a mérkőzések szükkséges rekordjait beállítjuk a verseny megfelelő rekordjának az értékére, az azonosítókat pedig a MongoDB hozza létre.
 
+A versenyt egy Post kéréssel tudjuk létrehozni ami a következőképpen néz ki:
+\begin{itemize}
+\item Az első lépésben a kért adatok alapján létrejön maga a verseny.
+\begin{cpp}
+router.post(
+  "/new",
+  asyncHandler(async (req, res) => {
+    const { name, type, playersCount, players, points, legs, doubleOut } =
+      req.body;
+
+    const existingPlayer = await PlayerModel.findOne({ players });
+    if (existingPlayer) {
+      res
+        .status(HTTP_BAD_REQUEST)
+        .send("Player with this name already exists!");
+      return;
+    }
+
+    const newTournament: Tournament = {
+      id: "",
+      name: req.body.name,
+      type: req.body.type,
+      playersCount: req.body.playersCount,
+      points: req.body.points,
+      legs: req.body.legs,
+      doubleOut: req.body.doubleOut,
+      players: req.body.players,
+      currentRound: "Round 1",
+      winner: "",
+      runnerUp: "",
+    };
+
+    console.log("Parsed Tournament Request:", newTournament);
+    const dbTournament = await TournamentModel.create(newTournament);
+\end{cpp}
+\item Ezt követően a verseny felvétele alatt megadott számú játékos számára is létrejönnek a játékos adatmodell dokumentumok az adatbázisban. 
+\begin{cpp}
+let dbPlayers: Player[] = [];
+
+    for (let i = 0; i < newTournament.playersCount; i++) {
+      const newPlayer: Player = {
+        id: "",
+        name: newTournament.players[i].playerName,
+        tournament_win: 0,
+        tournament_lose: 0,
+        match_win: 0,
+        match_lose: 0,
+      };
+
+      const dbPlayer = await PlayerModel.create(newPlayer);
+      dbPlayers.push(dbPlayer);
+      console.log("Parsed Player Request:", newPlayer, i);
+    }
+\end{cpp}
+\item A következő lépésben hajtódik végre a sorsolás, vagyis a játékosokkal, kettesével összehoz mérőzéseket. Amelyek később majd leszimulálhatók lesznek.
+\begin{cpp}
+
+    let dbMatches: Match[] = [];
+
+    for (let i = 0; i < playersCount; i += 2) {
+      const newMatch = new Match(
+        "",
+        dbTournament.id,
+        "Round 1",
+        req.body.legs,
+        req.body.doubleOut,
+        req.body.points,
+        "",
+        dbPlayers[i].id,
+        dbPlayers[i].name,
+        0,
+        dbPlayers[i + 1].id,
+        dbPlayers[i + 1].name,
+        0,
+        []
+      );
+
+      const dbMatch = await NewMatchModel.create(newMatch);
+      dbMatches.push(dbMatch);
+      console.log("Parsed Match Request:", newMatch);
+    }
+
+    console.log("Parsed Tournament Request:", newTournament);
+\end{cpp}
+\item Végül az utolsó lépésben csoportosítjuk az adatokat egy halmazzá, majd pedig ezt az objektumot küldjük el válaszként.
+\begin{cpp}
+const Data = {
+      tournament: dbTournament,
+      players: dbPlayers,
+      match: dbMatches,
+    };
+    res.send(Data);
+\end{cpp}
+\end{itemize}
+\subsection{Pontkalkulátor -  Mérkőzések lejátszása}
+A pontkalkulátor segítségével tudjuk a létrehozott mérkőzéseket lejátszani. A feladata, hogy az inputról kapott adatokat, vagyis a dobásokat, jól fel tudja dolgozni. Ennek érdekében egy külön osztályt hoztam létre. Az első metódusa a mérkőzés elindításáért felelős, a második metódus dolgozza fel, továbbítja és frissíti az adatokat a mérkőzésben.
+
+Első lépésben meg kell hívnunk a start() metódust, amely betölti az első üres leget a mérkőzésbe.
+\begin{cpp}
+  start(): Match {
+    this.match.legs.push(this.currentLeg);
+    return this.match;
+  }
+\end{cpp}
+
+A metódust egy Put kéréssel tudjuk meghívni. Amikor ez megtörténik a létrejönnek a statisztikai adattáblák a két játékos számára, majd pedig ezeket rögzítjük a memóriában a mérkőzéssel együtt, ugyanis, a későbbiekben a mérkőzés lejátszásához szükséges függvény is csak akkor fog helyesen lefordfulni, ha az összes kért adat megtalálható a memóriában. 
+\subsection{Statisztikák feldolgozása}
 Ez a fejezet mutatja be a megvalósítás lépéseit.
 Itt lehet az esetlegesen előforduló technikai nehézségeket említeni.
 Be lehet már mutatni a program elkészült részeit.

@@ -43,20 +43,48 @@ Az alábbiakban, egy matematikai modellben szeretném szemléltetni azokat a lé
 \caption{Darts folyamatábrája}
 \label{fig:cimer}
 \end{figure}
+
+
+\Section{Felhasznált technológiák - Frontend}
+\subsection{Angular}
+Az Angular egy nyílt forráskódú, TypeScript nyelven írt JavaScript keretrendszer. Az Angular mint keretrendszer számottevő előnnyel rendelkezik, miközben szabványos struktúrát biztosít a fejlesztők számára, amellyel dolgozhatnak. Lehetővé teszi a felhasználók számára, hogy nagyméretű alkalmazásokat hozzanak létre karbantartható módon. A használata sok előnnyel jár, mivel a keretrendszer alapja, a JavaScript nagyon sok helyen előfordul manapság, viszont önmagában a JavaScript nem teljesen ideális olyan oldalak fejlesztésére, amelyek modularitást, tesztelhetőséget és fejlesztői produktivitást igényelnek. Az egyéb JavaScript alapú keretrendszerek mellett az Angular ilyen és ehhez hasonló problémákra nyújt megoldást.
+
+Az Angular keretrendszert az alkalmzásom Frontend részének a fejlesztése közben használtam, aminek a segítségével nagyon sok fejlesztési lehetőségem nyílt és a komponens alapú architektúrájának köszönhetően az alkalmazásom dinamikus és átláthatóbb lett.
+\cite{Angular}
+\subsection{HTML és CSS}
+A HTML és CSS használata véleményem szerint nem szorul különösebb indoklásra és ajánlásra. Ezen két nyelvnek a használata elengedhetetlen manapság a webfejlesztők számárá, hiszen a modern web-es alkalmazások legnagyobb része már ezeken alapul. A HTML a címkék és törések rendszerének segítségével határozza meg a böngésző számára megjeleníteni kívánt tartalmat. A CSS ezen tartalmaknak a megjelenítését határozza meg amire számos opciónk van (pl.: színek, méretek, pozíciók, betűtípusok, stb.).Ez a két nyelv együttesen segít egyszerű, szövegekből, képekből és hiperhivatkozásokból álló weboldalak létrehozásában.
+https://www.nobledesktop.com/learn/html-css/why-learn-html-css
+\Section{Felhasznált technológiák - Backend}
+\subsection{Node.JS - Express}
+ A Node (vagy hivatalosabban Node.js) egy nyílt forráskódú, platformok közötti futtatókörnyezet, amely lehetővé teszi a fejlesztők számára, hogy mindenféle szerveroldali eszközt és alkalmazást készítsenek JavaScriptben. A futtatási időt a böngésző környezetén kívüli használatra szánják (azaz közvetlenül egy számítógépen vagy szerver operációs rendszeren való futtatásra). Mint ilyen, a környezet elhagyja a böngésző-specifikus JavaScript API-kat, és támogatja a hagyományosabb operációs rendszer API-kat, beleértve a HTTP és a fájlrendszer könyvtárakat.
+ 
 \begin{itemize}
-\item Irodalomkutatás. Amennyiben a dolgozat egy módszer kidolgozására, kifejlesztésére irányul, akkor itt lehet részletesen végignézni (módszertani vagy időrendi bontásban), hogy az eddigiekben milyen eredmények születtek a témakörben.
-\item Technológia. Mivel jellemzően kutatásról vagy szoftverfejlesztésről van szó, ezért annak a jellemző elemeit, technikai részleteit itt kell bemutatni.
-Ez tehát egy módszeres bevezetés ahhoz, hogy ha valaki nem jártas a témakörben, akkor tudja, hogy a dolgozat milyen aktuálisan elérhető eredményeket, eszközöket használt fel.
-\item Piackutatás. Bizonyos témáknál új termék vagy szolgáltatás kifejlesztése a cél.
-Ekkor érdemes annak alaposan utánanézni, hogy aktuálisan milyen eszközök érhetők el a piacon.
-Ez szoftverek esetében a hasonló alkalmazások bemutatását, táblázatos formában történő összehasonlítását jelentheti.
-Szerepelhetnek képek és észrevételek a viszonyításként bemutatott alkalmazásokhoz.
-\item Követelmény specifikáció. Külön szakaszban érdemes részletesen kitérni az elkészítendő alkalmazással kapcsolatos követelményekre.
-Ehhez tartozhatnak forgatókönyvek (\textit{scenario}-k).
-A szemléletesség kedvéért lehet hozzájuk képernyőkép vázlatokat is készíteni, vagy a használati eseteket más módon szemléltetni.
+\item A Node-ot úgy tervezték, hogy optimalizálja a webes alkalmazások áteresztőképességét és skálázhatóságát, és jó megoldás számos gyakori webes fejlesztési problémára (pl. valós idejű webes alkalmazások).
+\item A kódot "egyszerű régi JavaScriptben" írja, ami azt jelenti, hogy kevesebb időt kell a nyelvek közötti "kontextusváltással" foglalkozni, amikor kliens- és szerveroldali kódot egyaránt ír.
+\item A JavaScript egy viszonylag új programozási nyelv, és a nyelvtervezésben elért fejlesztések előnyeit élvezheti más hagyományos webszerver-nyelvekhez (pl. Python, PHP stb.) képest. Sok más új és népszerű nyelv fordít/konvertál JavaScriptbe, így a TypeScript, CoffeeScript, ClojureScript, Scala, LiveScript stb. is használható.
+\item  A node csomagkezelő (npm) több százezer újrafelhasználható csomaghoz biztosít hozzáférést. Emellett a legjobb függőségi feloldással rendelkezik, és a build toolchain nagy részét is automatizálhatja.
+\item Elérhető Microsoft Windows, macOS, Linux, Solaris, FreeBSD, OpenBSD, WebOS és NonStop OS rendszereken. Továbbá számos webtárhely-szolgáltató jól támogatja, amelyek gyakran speciális infrastruktúrát és dokumentációt biztosítanak a Node-oldalak hosztolásához.
 \end{itemize}
 
-\Section{Amit csak említés szintjén érdemes szerepeltetni}
+A Node.js segítségével egyszerű webkiszolgálót hozhat létre a Node HTTP csomag segítségével.
 
-Az olvasóról annyit feltételezhetünk, hogy programozásban valamilyen szinten járatos, és a matematikai alapfogalmakkal sem ebben a dolgozatban kell megismertetni.
-A speciális eszközök, programozási nyelvek, matematikai módszerekk és jelölések persze jó, hogy ha említésre kerülnek, de nem kell nagyon belemenni a közismertnek tekinthető dolgokba.
+
+Az Express a legnépszerűbb Node webes keretrendszer, és számos más népszerű Node webes keretrendszer alapkönyvtára. Mechanizmusokat biztosít a következőkhöz:
+
+\begin{itemize}
+\item Kezelőprogramok írása különböző HTTP igékkel rendelkező kérésekhez különböző URL-útvonalakon.
+\item Integrált a "view" renderelő motorokkal azért, hogy válaszokat generáljanak az adatok sablonokba illesztésével.
+\item Általános webalkalmazási beállítások beállítása, például a csatlakozáshoz használandó port és a válasz rendereléséhez használt sablonok helye.
+\item További kérésfeldolgozó "middleware" hozzáadása a kéréskezelő csővezeték bármely pontján.
+\end{itemize}
+
+
+Míg az Express maga meglehetősen minimalista, a fejlesztők kompatibilis middleware-csomagokat hoztak létre szinte bármilyen webfejlesztési probléma megoldására. Vannak könyvtárak a cookie-k, munkamenetek, felhasználói bejelentkezések, URL-paraméterek, POST-adatok, biztonsági fejlécek és még sok más adat kezelésére.
+
+
+A Node.js és az Express ideális választás olyan alkalmazások esetében amelyeknek a Frontend-je Angular, ezért is esett erre a választásom. Mivel mind a Node.js, mind az Angular JavaScript alapú keretrendszer, ezért kényelmes a közös használatuk és a kódbázis is könnyebben használható fel újra.  Az Angular és a Node.js közötti adatkommunikáció természetes, hiszen mindkettő aszinkron és eseményvezérelt megközelítést alkalmaz. Az Express lehetővé teszi az egyszerű API-k kialakítását, amelyek könnyen integrálhatók az Angular frontendjébe, például a HTTP kérések kezelésére. Node.js és Express együtt rugalmas megoldást nyújtanak a háttérlogika megvalósítására. A backend oldalon a különböző metódusok, hívások könnyen tesztelhetőek, egyszerű struktúrával rendelkeznek, így logikailag könnyebb volt az alkalmazás megtervezése és felépítése. Az Angular és a Node.js - Express kombinációja tehát egy erőteljes és kényelmes megoldást nyújt a teljes verziós JavaScript alkalmazások fejlesztéséhez. 
+ÖSSZEHASONLÍTÁS
+\subsection{MongoDB}
+A MongoDB, a legnépszerűbb NoSQL adatbázis, egy nyílt forráskódú dokumentumorientált adatbázis. A "NoSQL" kifejezés jelentése "nem relációs". Ez azt jelenti, hogy a MongoDB nem a táblázatszerű relációs adatbázis-struktúrán alapul, hanem egy teljesen más mechanizmust biztosít az adatok tárolására és visszakeresésére. Ezt a tárolási formátumot BSON-nak ( a JSON formátumhoz hasonló) nevezik. Ha az adatbázis egyetlen szerveren fut, akkor eléri a skálázási határt. A NoSQL-adatbázisok jobban skálázhatók és jobb teljesítményt nyújtanak. A MongoDB egy ilyen NoSQL adatbázis, amely újabb és újabb szerverek hozzáadásával skálázódik, és rugalmas dokumentummodelljével növeli a termelékenységet. A MongoDB indexelést használ a hatékony keresés érdekében, így a teljes adatmennyiség rövid idő alatt feldolgozható. A MongoDB növeli az adatok rendelkezésre állását az adatok különböző szervereken lévő többszörös másolataival. A redundancia biztosításával megvédi az adatbázist a hardverhibáktól. Ha egy szerver leáll, az adatok könnyen lekérdezhetők a többi aktív szerverről, amelyeken szintén tárolták az adatokat. A MongoDB az egyszerűsége miatt jelentősen megkönnyítette az alkalmazás fejlesztését. Különösképpen a mongoose-t szeretném kiemelni, amelynek a segítségével könnyebb volt az adatmodellek felépítése, a beépített metódusaival pedig egyszerűen és röviden elvégezhető volt minden adatbázis művelet. 
+(https://www.geeksforgeeks.org/mongodb-an-introduction/)
+

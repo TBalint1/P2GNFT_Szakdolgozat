@@ -33,6 +33,7 @@ győzelmét aratta. Németországban a Sport1 csatorna közvetítését a 2017-�
 alkalmával követték a legtöbben, 1,48 millióan, míg a 2015-ös Angliában rekord nézettséget 
 hozó döntőt 1,36 millióan követték figyelemmel.” –olvasható a sportmarketing.hu cikke 
 alapján, amelyet a darts sikerének titkáról írtak 2017-ben.
+\cite{Darts}
 
 
 A darts sikerével együtt járnak természetesen a támogatók is, amelynek a legnagyobb részét 
@@ -55,32 +56,4 @@ részletes statisztikák előállításának a lehetősége megvan és mivel haz
 években kezd jelentősen népszerűbbé válni a sportág, ezért az igény is meg lenne rá, ennek 
 ellenére  ez egyenlőre még egy úgynevezett piaci rés Magyarországon.
 
-Az weboldalam fejlesztésének a célja, ennek a piaci résnek a megszűntetése, minden 
-elérhető adat feldolgozásával és abból statisztikák előállításával magyar nyelven. Az oldal 
-elérhetővé tenné ezen statisztikák megtekintését és az általunk lejátszott meccsek adatainak 
-a feltöltésével előállítaná számunkra a meccsünk statisztikáját a profi meccsekhez hasonló 
-formában. Ezt a weboldal mögött működő adatbázisok és funkciók frissítésével és 
-bővítésével valósítanám meg, ezáltal a webalkalmazást és a darts követőit is naprakészen 
-tartva.
-
-
-\begin{cpp}
-export const PlayerSchema = new Schema<Player>(
-    {
-        name:{type: String, required:true},
-        tournament_win:{type: Number, required:true},
-        tournament_lose:{type: Number, required: true},
-        match_win:{type: Number, required: true},
-        match_lose:{type: Number, required: true},
-    },{
-        toJSON:{
-            virtuals:true
-        },
-
-        toObject:{
-            virtuals:true
-        },
-        timestamps:true
-    }
-);
-\end{cpp}
+A webalkalmazásom célja a részletesebb statisztikák előállításának bemutatása, a felhasználók és általam lejátszott, szimulált mérkőzéseken keresztül. Ezt saját versenyek, mérkőzések létrehozásával teszem lehetővé. A létrejött mérkőzések lejátszásával párhuzamosan kerülnek kiszámításra az adott mérkőzés statisztikái, ezek a mérkőzések és statisztikák pedig egy adatbázisba mentődnek le, ahonnan az adatok lekérdezhetők és megjeleníthetők.

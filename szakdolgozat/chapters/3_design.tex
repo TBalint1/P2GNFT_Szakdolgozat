@@ -2,20 +2,24 @@
 
 Az általam készített alkalmazás célja egy olyan darts-os webes alkalmazás létrehozása amellyel saját versenyeket tudunk létrehozni a tetszésünk szerinti beállításokkal. A mérkőzések adatait a játékosok rögzítik egy pontszámláló segítségével, lehetőleg a mérkőzés valós lejátszásával párhuzamosan. Az oldal ezekből az adatokból állít elő statisztikákat a mérkőzésekről, a játékosokról és a versenyekről.
 
+Az alkalmazás két része, azaz a frontend és a backend közötti kommunikáció a szolgáltatások és a routerek segítségével tudjuk megvalósítani, de természetesen elengedhetetlen az internet is hozzá. A szolgáltatások feladata a kérések küldése a backend irányába illetve a Backend által küldött válaszok fogadása is. A kéréseket a router-ek dolgozzák fel és így továbbítják az adatbázis irányába ezután pedig ők küldik a válaszokat a frontend számára.
 
-Ebben a fejezetben az implementáció nem kell, hogy túl nagy szerepet kapjon.
-Ez még csak a tervezési fázis.
-(Nyilván ha olyan a téma, hogy magának az implementációnak a módjával foglalkozik, adott formális nyelvet mutat be, úgy a kódpéldákat már innen sem lehet kihagyni.)
+Az alábbi ábra ezen kommunikáció szemléltetésre szolgál, de egy egyszerű képet is ad az alkalmazás felépítéséről.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/DoubleOut_Network.drawio.png}
+\caption{Az alkalmazáson belüli kommunikáció}
+\label{fig:cimer}
+\end{figure}
 
 \Section{Fő komponensek}
 \begin{itemize}
 \item Jól átlátható és átjárható oldalak
-\item Több féle verseny létrehozása
-\item Versenyek, lejátszása
-\item Szűrési lehetőségek (Játékos, Verseny, Statisztikai szempont, stb.)
+\item Verseny és mérkőzések létrehozása
+\item Versenyek és mérkőzések lejátszása
 \item Keresési lehetőségek (Játékos, Verseny)
 \item Aktív és már befejezett versenyek nyilvántartása és kezelése
-\item Mérkőzések lejátszása
 \item Mérkőzés, játékos és verseny adatlapok megjelenítése
 \item Mérkőzés, játékos és verseny statisztikák feldolgozása és megjelenítése
 \item Felhasználói bejelentkezés/regisztráció
@@ -23,37 +27,21 @@ Ez még csak a tervezési fázis.
 
 \end{itemize}
 
-Táblázatokhoz a \texttt{table} környezetet ajánlott használni.
-Erre egy minta \aref{tab:minta}. táblázat.
-A hivatkozáshoz az egyedi \texttt{label} értéke konvenció szerint \texttt{tab:} prefixszel kezdődik.
-
-\begin{table}[h]
-\centering
-\caption{Minta táblázat. A táblázat felirata a táblázat felett kell legyen!}
-\label{tab:minta}
-\begin{tabular}{l|c|c|}
-a & b & c \\
-\hline
-1 & 2 & 3 \\
-4 & 5 & 6 \\
-\hline
-\end{tabular}
-\end{table}
-
 \Section{Statisztikai opciók és számításuk bemutatása}
 Mint minden sportban, a dartsban is a mérkőzésekből különböző statisztikai adatok nyerhetők ki, az átlagoktól kezdve, a 180as dobások számán át, a kiszálló dobások hatékonyságáig. Az alkalmazás fő funkciója, hogy egy adatbázisból, - amely meccsenként tartalmazza az adott meccshez tartozó dobásokat- , kiszámítja a statisztikákat. A statisztikák nem csupán mérkőzésenként kerülnek kiszámításra és megjelenítésre, hanem elérhetőek játékosonként is ahol egy adott játékosnak az adatbázisban lévő összes mérkőzése kerül számításba.
 
 Az alábbi pontokban azok a statisztikai elemek szerepelnek amelyek kiszámításra kerülnek a meccsek vagy a játékosok esetében.
 
 \begin{itemize}
-\item Nyert szettek és/vagy legek száma:
+\item Nyert legek száma:
 
 Magának az eredmények a megjelenítése. Olyan mérkőzések esetében, amelyeket szettekre játszanak, külön megjelenítésre kerülnek az adott szettben megnyert legeknek a száma is. Egy leget az a játékos nyeri akinek a pontszámát a legkevesebb nyílból sikerül 0-ra redukálnia.
 \item Átlagok:
 
 Egy játékos átlagát legenként/szettenként számoljuk ki a körönként dobott pontszámok szummázásával, amelyet elosztunk a körök számával.
 \item Kiszálló dobások hatékonysága:
-A kiszálláshoz szükséges duplára sikeresen eldobott nyilak és a kiszállóhoz szükséges duplára összesen eldobott nyilak arányát mutatja.
+
+A kiszálláshoz szükséges sikeresen eldobott nyilak és a kiszállóra összesen eldobott nyilak arányát mutatja.
 \item 180-as dobások száma:
 
 Azon dobások száma játékosonként, amely elérte az egy körben dobható maximális pontszámot, azaz a 180-at.
@@ -68,44 +56,22 @@ Azon dobások száma játékosonként, amelynek az értéke 100 vagy annál töb
 Egy játkos legmagasabb pontszámú kiszállást is érő dobása egy meccsen.
 \item Első 9 nyíl átlaga:
 
-A játékos a mérkőzésben legenként eldobott első 9 nyilának az értékei szummázva és osztva a lejátszott legek számának háromszorosával.
-\item Első 3 nyíl átlaga:
-
-A játékos a mérkőzésen eldobott első 3 nyilának, azaz az első körének az értékei szummázva és osztva a lejátszott legek számával
+Egy játékos első 3 körének, azaz az eldobott első 9 nyilának az átlaga.
 \item Első, második és harmadik nyíl átlag értéke:
 
 Egy játékos által körönként eldobott első, második és harmadik nyilak értékeinek az átlaga a teljes mérkőzésre/legre kivetítve.
-\item Sikeres egy, kettő, és három nyilas kiszállók aránya:
+\item Sikeres egy, kettő, és három nyilas kiszállók száma:
 
-Sikeresen bedobott 1, 2 és 3 nyilat igénylő kiszállóknak a száma elosztva az összes olyan kör számával, amikor a játékosnak esélye volt kiszállni.
-\item Sikeresen bedobott meccs nyilak aránya:
+Számontartja, hogy a játékos sikeres kiszálló dobásaihoz egy, kettő vagy esetleg három nyíl volt szükséges.
+\item Eltalált tripla 20-ak száma:
 
-Azon dupla szektorra sikeresen eldobott nyilaknak a száma, elosztva az összes olyan eldobott nyilaknak a számával amikor az adott játékosnak már egy nyíl is elég lett volna a mérkőzés megnyeréséhez.
-\item Eltalált tripla 20-ak aránya:
+Az összes olyan nyíl száma amellyel a játékos a tripla 20-as szektort találta el, azaz az egy nyílból dobható maximális értéket
 
-Az összes olyan nyilaknak a száma amellyel az adott játékos sikeresen eltalálta a tripla 20-as szektort, elosztva minden 20-as szektorra dobott nyilak számával.
-\item Elvesztett kezdések aránya:
+\item Körönként dobott 180-ak aránya:
 
-Azon legeknek a száma amikor az adott játékos olyan leget vesztett el amely az ő dobásával kezdődött.
-\item Legenként dobott 180-ak aránya:
-
-Az adott játékos összes 180-al zárult körének a száma elosztva a lejátszott legek számával.
+Egy játékos 180-as dobásainak a száma osztva minden általa elvégzett körrel.
 
 \end{itemize}
-
-
-Ábrákat a \texttt{figure} környezettel lehet használni.
-A használatára egy példa \aref{fig:cimer}. ábrán látható.
-Az \texttt{includegraphics} parancsba 
-Az ábrák felirata az ábra alatt kell legyen.
-Az ábrák hivatkozásához használt nevet konvenció szerint \texttt{fig:}-el célszerű kezdeni.
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.3]{images/me_logo.png}
-\caption{A Miskolci Egyetem címere.}
-\label{fig:cimer}
-\end{figure}
 
 \Section{Az oldalak bemutatása}
 Az alkalmazás több oldalból tevődik össze, de természetesen az oldalak között egyszerű az átjárhatóság. Ez a fejlécnek köszönhető ahol a menüpontokban az összes oldal megtalálható és a fejléc természetesen minden oldalon elérhető.
@@ -221,7 +187,14 @@ A felhasználói adatlap oldalát a sikeres bejelentkezés után tudjuk elérni.
 \end{figure}
 
 \Section{Adatmodellek bemutatása}
-A program megírása során külön adatmodelleket hoztam létre a játékosok, a versenyek, a mérkőzések, a statisztikák illetve a felhasználók számára. Az alkalmazás ezen adatmodellek alapján képes az adatok feldolgozására és azok küldésére az adatbázis számára, illetve fogadására is az adatbázis irányából. Az alábbi fastruktúra vázolja az alkalmazás felépítését az adatmodellek szempontjából. Egy felhasználó képes létrehozni egy versenyt, amely versenyből származnak a játékosok illetve a mérkőzések, az utóbbiból a statisztikák származnak, mivel azok a mérkőzés adatai alapján kerülnek kiszámításra. (MÉG MÓDOSÍTANI KELL AZ ÁBRA ALAPJÁN)
+A program megírása során külön adatmodelleket hoztam létre a játékosok, a versenyek, a mérkőzések, a statisztikák illetve a felhasználók számára. Az alkalmazás ezen adatmodellek alapján képes az adatok feldolgozására és azok küldésére az adatbázis számára, illetve fogadására is az adatbázis irányából. Az alábbi fastruktúra vázolja az alkalmazás felépítését az adatmodellek szempontjából. Egy felhasználó képes létrehozni egy versenyt, amely versenyből származnak a játékosok illetve a mérkőzések, az utóbbiból a statisztikák származnak, mivel azok a mérkőzés adatai alapján kerülnek kiszámításra.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/DoubleOut_NewClass.drawio(1).png}
+\caption{Az adatbázis felépítésének vázlata}
+\label{fig:cimer}
+\end{figure}
 
 \subsection{Felhasználó adatmodell}
 A felhasználó adatmodell a felhasználók adatainak a tárolására hivatott. A felépítés egyszerű, tartalmaz egy egyedi azonosítót, nevet, email címet, jelszót, illetve egy „isAdmin” és egy token adattagot. Az azonosítót az adatbázis generálja a létrehozáskor, a további adatokat pedig a regisztrációkor adjuk meg. A sikeres regisztráció után ezek az adatok mentésre kerülnek az adatbázisban és a későbbiekben már lehetősége lesz a felhasználónak bejelentkezni az oldalra ezen adatok megadásával.
@@ -244,41 +217,36 @@ export const UserSchema = new Schema<User>({
 \end{cpp}
 
 \subsection{Verseny adatmodell}
-A versenyek képezik az alkalmazáson belüli adatmodellek alapját, mivel a verseny létrehozásától függ a játékosok és mérkőzések létrehozása is. Az adatmodell tartalmazza a verseny azonosítóját, a nevét, a típusát a játékosok számát illetve 2 interfészt is, egyet a verseny mérkőzéseinek, az adatainak a beállítására és egyet a versenyben résztvevő játékosok megadására. A mérkőzések esetében meg kell adnunk, hogy hány pontosak lesznek a mérkőzések, hogy hány nyert leg-ig tart a mérkőzés, illetve, hogy duplával szükséges-e kiszállni. A játékosok esetében a résztvevők neveit kell csak megadni, vagyis annyi játékost amennyi a korábban megadott játékosok száma. A játékosok megadásánál lehetőségünk van új játékosok felvételére, illetve olyan játékosok felvételére is, akik korábban már vettek részt versenyben, vagyis már szerepelnek az adatbázisban.
+A versenyek képezik az alkalmazáson belüli adatmodellek alapját, mivel a verseny létrehozásától függ a játékosok és mérkőzések létrehozása is. Az adatmodell tartalmazza a verseny azonosítóját, a nevét, a típusát a játékosok számát, a mérkőzések szabályait illetve 1 interfészt is a versenyben résztvevő játékosok megadására. A játékosok esetében a résztvevők neveit kell csak megadni, vagyis annyi játékost amennyi a korábban megadott játékosok száma.
 
 \begin{cpp}
 export const TournamentSchema = new Schema<Tournament>(
-    {
-        name:{type: String, required:true},
-        type:{type: String, required:true},
-        playersCount:{type: Number, required:true},
-        match:
-        [
-            {
-                points:{type: Number, required:true},
-                legs:{type: Number, required:true},
-                double_out:{type: Boolean, required:true},
-            },
-        ],
-        players:
-        [
-            {
-                name:{type: String, required:true},
-            },
-        ],
-        currentRound:{type: String, required:true},
-        winner:{type: String, required:false},
-        runnerUp:{type: String, required:false},
-    },{
-        toJSON:{
-            virtuals:true
-        },
+  {
+    name: { type: String, required: true },
+    type: { type: String, required: true },
+    playersCount: { type: Number, required: true },
+    points: { type: Number, required: true },
+    legs: { type: Number, required: true },
+    doubleOut: { type: Boolean, required: true },
+    players: [
+      {
+        playerName: { type: String, required: true },
+      },
+    ],
+    currentRound: { type: String, required: true },
+    winner: { type: String, required: false },
+    runnerUp: { type: String, required: false },
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
 
-        toObject:{
-            virtuals:true
-        },
-        timestamps:true
-    }
+    toObject: {
+      virtuals: true,
+    },
+    timestamps: true,
+  }
 );
 \end{cpp}
 
@@ -307,57 +275,52 @@ export const PlayerSchema = new Schema<Player>(
 \end{cpp}
 
 \subsection{Mérkőzés adatmodell}
-A mérkőzés adatmodell segítségével tudjuk tárolni a lejátszott mérkőzések adatait a mérkőzés azonosítójától kezdve az utolsó eldobott nyíl értékéig. Az adatmodell elősorban tartalmazza a mérkőzés azonosítóját és annak a versenynek az azonosítóját, amelynek a keretei között lejátszásra kerül a mérkőzés. Emellett nyilvántartjuk még, hogy a mérkőzés a verseny melyik fordulójában került lejátszásra, kiszálló típusát (duplával kell-e kiszállni vagy sem) és az egymás ellen játszó két játékos adatait, vagyis az azonosítójukat, a nevüket, és az eredményüket. Magát a mérkőzés menetét az adatmodellen belül a Leg interfészben tároljuk, amely a nevéből adódóan a lejátszott leg-ek adatait tartalmazza, mint például, hogy hányadik leg-ben járunk, ki a kezdő játékos és ki nyerte a leg-et. Ezen belül található meg a Score History interfész, amely a játékosok körönkénti dobásait tartja nyilván, vagyis, hogy éppen mely játékos dobott, mi volt a dobás értéke és ezután mennyire módosult a pontszáma. Az utóbbi két adat a Turn interfészből számítható ki, ami a Score History-n belül található meg és a körben dobott nyilak értékeit tárolja, vagyis a nyilanként eltalált szektorokat és hogy azon belül tripla, dupla vagy szimpla értéket dobtunk. Ezeken keresztül folyik le egy mérkőzés a megadott szabályok alapján és értelemszerűen az olyan adattgok, mint a mérkőzés győztese, a leg győztese és a két játékos eredménye ezekből származik.
+A mérkőzés adatmodell segítségével tudjuk tárolni a lejátszott mérkőzések adatait a mérkőzés azonosítójától kezdve az utolsó eldobott nyíl értékéig. Az adatmodell elsősorban tartalmazza a mérkőzés azonosítóját és annak a versenynek az azonosítóját, amelynek a keretei között lejátszásra kerül a mérkőzés. Emellett nyilvántartjuk még, hogy a mérkőzés a verseny melyik fordulójában került lejátszásra, kiszálló típusát (duplával kell-e kiszállni vagy sem) és az egymás ellen játszó két játékos adatait, vagyis az azonosítójukat, a nevüket, és az eredményüket. Magát a mérkőzés menetét az adatmodellen belül a Leg interfészben tároljuk, amely a nevéből adódóan a lejátszott leg-ek adatait tartalmazza, mint például, hogy hányadik leg-ben járunk, ki a kezdő játékos és ki nyerte a leg-et. Ezen belül található meg Turn interfész amely a körönkénti dobásokat tárolja, vagyis, hogy kidobta azt a kört, illetve, hogy mennyi volt az első, a második és a harmadik nyíl értéke. Ezeken keresztül folyik le egy mérkőzés a megadott szabályok alapján és értelemszerűen az olyan adattagok, mint a mérkőzés győztese, a leg győztese és a két játékos eredménye ezekből származik.
 
 \begin{cpp}
-export const MatchSchema = new Schema<Match>(
-    {
-        TOURNAMENT_ID:{type: String,required:true},
-        ROUND:{type: String,required:true},
-        FIRST_TO:{type: Number, required:true},
-        DOUBLE_OUT: {type: Boolean, required:true},
-        HOME_ID:{type: String,required:true},
-        HOME_NAME:{type: String,required:true},
-        HOME_SCORE:{type: Number,required:true},
-        AWAY_ID:{type: String,required:true},
-        AWAY_NAME:{type: String,required:true},
-        AWAY_SCORE:{type: Number,required: true},
-        LEG:
-        [
-            {
-              COUNT: { type: Number,required: true},
-              SERVICE_PLAYER: { type: String,required:true },
-              WINNER: { type: String,required:true },
-              SCORE_HISTORY: [
-                {
-                  PLAYER: { type: String,required:true },
-                  TURN: [
-                    {
-                      SECTOR1: { type: Number, required:true},
-                      MULTIPLIER1: { type: Number, required: true},
-                      SECTOR2: { type: Number, required:true},
-                      MULTIPLIER2: { type: Number, required: true},
-                      SECTOR3: { type: Number, required:true},
-                      MULTIPLIER3: { type: Number, required: true},
-                    },
-                  ],
-                  SCORE: { type: Number,required:true },
-                  VALUE: { type: Number,required:true },
-                },
-              ],
-            },
+export const NewMatchSchema = new Schema<Match>(
+  {
+    tournamentId: { type: String, required: true },
+    round: { type: String, required: true },
+    firstTo: { type: Number, required: true },
+    doubleOut: { type: Boolean, required: true },
+    points: { type: Number, required: true },
+    winner: { type: String, required: false },
+    homeId: { type: String, required: true },
+    homeName: { type: String, required: true },
+    homeScore: { type: Number, required: true },
+    awayId: { type: String, required: true },
+    awayName: { type: String, required: true },
+    awayScore: { type: Number, required: true },
+    legs: [
+      {
+        starterPlayer: { type: String, required: true },
+        homePoint: { type: Number, required: true },
+        awayPoint: { type: Number, required: true },
+        winner: { type: String, required: true },
+        turns: [
+          {
+            playerId: { type: String, required: false },
+            throw1Sector: { type: Number, required: false },
+            throw1Multiplier: { type: Number, required: false },
+            throw2Sector: { type: Number, required: false },
+            throw2Multiplier: { type: Number, required: false },
+            throw3Sector: { type: Number, required: false },
+            throw3Multiplier: { type: Number, required: false },
+          },
         ],
-          WINNER:{type: String,required:false},
-    },{
-        toJSON:{
-            virtuals:true
-        },
-
-        toObject:{
-            virtuals:true
-        },
-        timestamps:true
-    }
+      },
+    ],
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    toObject: {
+      virtuals: true,
+    },
+    timestamps: true,
+  }
 );
 \end{cpp}
 
@@ -366,67 +329,74 @@ A statisztikai adatmodell a korábban már említett szempontok szerint tárolja
 
 \begin{cpp}
 export const StatSchema = new Schema<Stat>(
-    {
-        tournamentId:{type: String,required:true},
-        matchId:{type: String,required:true},
-        playerId: {type: String,required:true},
-        average:{type: Number, required:true},
-        checkouts:{type: Number, required:true},
-        numberOf180s:{type: Number, required:true},
-        numberOf140plus:{type: Number, required:true},
-        numberOf100plus:{type: Number, required:true},
-        highestCheckout:{type: Number, required:true},
-        first9DartsAverage:{type: Number, required:true},
-        firstDartAvergrage:{type: Number, required:true},
-        secondDartAverage:{type: Number, required:true},
-        thirdDartAverage:{type: Number, required:true},
-        numberOf3DartCheckouts:{type: Number, required:true},
-        numberOf2DartCheckouts:{type: Number, required:true},
-        numberOf1DartCheckouts:{type: Number, required:true},
-        triple20s:{type: Number, required:true},
-        breaks:{type: Number, required:true},
-        percentageOf180PerLeg:{type: Number, required:true},
-    },{
-        toJSON:{
-            virtuals:true
-        },
+  {
+    tournamentId: { type: String, required: true },
+    matchId: { type: String, required: true },
+    playerId: { type: String, required: true },
+    average: { type: Number, required: true },
+    checkouts: { type: Number, required: true },
+    numberOf180s: { type: Number, required: true },
+    numberOf140plus: { type: Number, required: true },
+    numberOf100plus: { type: Number, required: true },
+    highestCheckout: { type: Number, required: true },
+    first9DartsAverage: { type: Number, required: true },
+    firstDartAvergrage: { type: Number, required: true },
+    secondDartAverage: { type: Number, required: true },
+    thirdDartAverage: { type: Number, required: true },
+    numberOf3DartCheckouts: { type: Number, required: true },
+    numberOf2DartCheckouts: { type: Number, required: true },
+    numberOf1DartCheckouts: { type: Number, required: true },
+    triple20s: { type: Number, required: true },
+    percentageOf180PerLeg: { type: Number, required: true },
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
 
-        toObject:{
-            virtuals:true
-        },
-        timestamps:true
-    }
+    toObject: {
+      virtuals: true,
+    },
+    timestamps: true,
+  }
 );
 \end{cpp}
 
+\Section{Az alkalmazás végpontjai}
+Az alkalmazáson belül különböző végpontok segítségével jön létre a kommunikáció. A végpontok segítségével különböző kéréseket tudunk küldeni, az alábbiakban pedig ezeket szeretném bemutatni.
 
-A matematikai témájú dolgozatokban szükség lehet tételek és bizonyításaik megadására.
-Ehhez szintén vannak készen elérhető környezetek.
+A felhasználók esetében az alkalmazás két Post kérést használ amelyek segítségével új felhasználókat hozhatunk létre vagy bejelentkezhetünk a már meglévőkkel.
 
-\begin{definition}
-Ez egy definíció
-\end{definition}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/User_Vegpontok.drawio.png}
+\caption{A felhasználók által használt végpontok}
+\label{fig:cimer}
+\end{figure}
 
-\begin{lemma}
-Ez egy lemma
-\end{lemma}
+A játékosok három Get kérést alkalmaznak, a játékosok lekérdezés, egy játékos lekérdezése azonosító alapján és játékosok keresése miatt.
 
-\begin{theorem}
-Ez egy tétel
-\end{theorem}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/Player_Vegpontok.drawio.png}
+\caption{A játékosok által használt végpontok}
+\label{fig:cimer}
+\end{figure}
 
-\begin{proof}
-Ez egy bizonyítás
-\end{proof}
+A versenyeket a játékosokhoz hasonlóan szintén alkalmaznak 3 Get kérést lekérdezésekre és keresésre. Emellett itt megtalálható még egy Post kérés ami az új versenyek rögzítésére szolgál.
 
-\begin{corollary}
-Ez egy tétel
-\end{corollary}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/Tournament_Vegpontok.drawio.png}
+\caption{A versenyek által használt végpontok}
+\label{fig:cimer}
+\end{figure}
 
-\begin{remark}
-Ez egy megjegyzés
-\end{remark}
+A mérkőzések esetében két Get kéréssel tudjuk lekérdezni őket, a harmadik Get kéréssel pedig a még be nem fejezett mérkőzéseket tudjuk folytatni. Ezekmellett a két Put kérés a mérkőzések elindításáért felelős, valamint dobások végrehajtásáért.
 
-\begin{example}
-Ez egy példa
-\end{example}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/Merkozes_Vegpontok.drawio.png}
+\caption{A mérkőzések által használt végpontok}
+\label{fig:cimer}
+\end{figure}
