@@ -1,47 +1,35 @@
 \Chapter{Az alkalmazás tervezése}
 
-Az általam készített alkalmazás célja egy olyan darts-os webes alkalmazás létrehozása amellyel saját versenyeket tudunk létrehozni a tetszésünk szerinti beállításokkal. A mérkőzések adatait a játékosok rögzítik egy pontszámláló segítségével, lehetőleg a mérkőzés valós lejátszásával párhuzamosan. Az oldal ezekből az adatokból állít elő statisztikákat a mérkőzésekről, a játékosokról és a versenyekről.
+Az általam készített alkalmazás célja, egy olyan darts-os webalkalmazás létrehozása, amellyel saját versenyeket tudunk létrehozni a tetszésünk szerinti beállításokkal. A mérkőzések adatait a játékosok rögzítik egy pontszámláló segítségével, lehetőleg a mérkőzés valós lejátszásával párhuzamosan. Az oldal ezekből az adatokból állít elő statisztikákat a mérkőzésekről, a játékosokról és a versenyekről. A versenyek létrehozása és a versenyek lejátszása mellett lehetőségünk van a nyilvántartott eredmények és statisztikák megtekintésére. A statisztikák több szempont szerint is megtekinthetők, ugyanis kiszámításra kerülnek a mérkőzések, a játékosok, és a versenyek estében is. Emellett a felhasználóknak lehetőségük van saját profilt is létrehozni regisztrációval, amibe később be is jelentkezhetnek.
 
-Az alkalmazás két része, azaz a frontend és a backend közötti kommunikáció a szolgáltatások és a routerek segítségével tudjuk megvalósítani, de természetesen elengedhetetlen az internet is hozzá. A szolgáltatások feladata a kérések küldése a backend irányába illetve a Backend által küldött válaszok fogadása is. A kéréseket a router-ek dolgozzák fel és így továbbítják az adatbázis irányába ezután pedig ők küldik a válaszokat a frontend számára.
+Az alkalmazás készítése során minden komponens esetében a fontos szempont volt, hogy egyszerű, felhasználóbarát megjelenéssel rendelkezzen, anélkül, hogy ezáltal a funkcióit limitálná.\newline
 
-Az alábbi ábra ezen kommunikáció szemléltetésre szolgál, de egy egyszerű képet is ad az alkalmazás felépítéséről.
+Az alkalmazás két része, azaz a Frontend és a Backend közötti kommunikáció a szolgáltatások és a routerek segítségével tudjuk megvalósítani, de természetesen elengedhetetlen az internet is hozzá. A szolgáltatások feladata a kérések küldése a Backend irányába, illetve a Backend által küldött válaszok fogadása is. A kéréseket a router-ek dolgozzák fel és így továbbítják az adatbázis irányába, ezután pedig ők küldik a válaszokat a Frontend számára.
+
+A \ref{fig:network} -es ábra ezen kommunikáció szemléltetésre szolgál, de egy egyszerű képet is ad az alkalmazás felépítéséről.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/DoubleOut_Network.drawio.png}
+\includegraphics[scale=0.40]{images/DoubleOut_Network.drawio.png}
 \caption{Az alkalmazáson belüli kommunikáció}
-\label{fig:cimer}
+\label{fig:network}
 \end{figure}
 
-\Section{Fő komponensek}
-\begin{itemize}
-\item Jól átlátható és átjárható oldalak
-\item Verseny és mérkőzések létrehozása
-\item Versenyek és mérkőzések lejátszása
-\item Keresési lehetőségek (Játékos, Verseny)
-\item Aktív és már befejezett versenyek nyilvántartása és kezelése
-\item Mérkőzés, játékos és verseny adatlapok megjelenítése
-\item Mérkőzés, játékos és verseny statisztikák feldolgozása és megjelenítése
-\item Felhasználói bejelentkezés/regisztráció
-\item Felhasználói adatlap kezelése
-
-\end{itemize}
-
 \Section{Statisztikai opciók és számításuk bemutatása}
-Mint minden sportban, a dartsban is a mérkőzésekből különböző statisztikai adatok nyerhetők ki, az átlagoktól kezdve, a 180as dobások számán át, a kiszálló dobások hatékonyságáig. Az alkalmazás fő funkciója, hogy egy adatbázisból, - amely meccsenként tartalmazza az adott meccshez tartozó dobásokat- , kiszámítja a statisztikákat. A statisztikák nem csupán mérkőzésenként kerülnek kiszámításra és megjelenítésre, hanem elérhetőek játékosonként is ahol egy adott játékosnak az adatbázisban lévő összes mérkőzése kerül számításba.
+Mint minden sportban, a dartsban is a mérkőzésekből különböző statisztikai adatok nyerhetők ki, az átlagoktól kezdve, a 180as dobások számán át, a kiszálló dobások hatékonyságáig. Az alkalmazás fő funkciója, hogy egy adatbázisból, - amely meccsenként tartalmazza az adott meccshez tartozó dobásokat- , kiszámítja a statisztikákat. A statisztikák nem csupán mérkőzésenként kerülnek kiszámításra és megjelenítésre, hanem elérhetőek játékosonként is, ahol egy adott játékosnak az adatbázisban lévő összes mérkőzése kerül számításba.
 
-Az alábbi pontokban azok a statisztikai elemek szerepelnek amelyek kiszámításra kerülnek a meccsek vagy a játékosok esetében.
+Az alábbi pontokban azok a statisztikai elemek szerepelnek, amelyek kiszámításra kerülnek a meccsek vagy a játékosok esetében.
 
 \begin{itemize}
 \item Nyert legek száma:
 
-Magának az eredmények a megjelenítése. Olyan mérkőzések esetében, amelyeket szettekre játszanak, külön megjelenítésre kerülnek az adott szettben megnyert legeknek a száma is. Egy leget az a játékos nyeri akinek a pontszámát a legkevesebb nyílból sikerül 0-ra redukálnia.
+Magának az eredményeknek a megjelenítése. Olyan mérkőzések esetében, amelyeket szettekre játszanak, külön megjelenítésre kerülnek az adott szettben megnyert legeknek a száma is. Egy leget az a játékos nyeri akinek a pontszámát a legkevesebb nyílból sikerül 0-ra redukálnia.
 \item Átlagok:
 
-Egy játékos átlagát legenként/szettenként számoljuk ki a körönként dobott pontszámok szummázásával, amelyet elosztunk a körök számával.
+Egy játékos körönként dobott nyilainak az értéke, osztva a körök a számával.
 \item Kiszálló dobások hatékonysága:
 
-A kiszálláshoz szükséges sikeresen eldobott nyilak és a kiszállóra összesen eldobott nyilak arányát mutatja.
+A kiszálláshoz szükséges sikeresen eldobott nyilak, és a kiszállóra összesen eldobott nyilak arányát mutatja.
 \item 180-as dobások száma:
 
 Azon dobások száma játékosonként, amely elérte az egy körben dobható maximális pontszámot, azaz a 180-at.
@@ -53,19 +41,19 @@ Azon dobások száma játékosonként, amelynek az értéke 140 vagy annál töb
 Azon dobások száma játékosonként, amelynek az értéke 100 vagy annál több, de kevesebb, mint 180.
 \item Legmagasabb kiszálló:
 
-Egy játkos legmagasabb pontszámú kiszállást is érő dobása egy meccsen.
+Egy játékos legmagasabb pontszámú, és kiszállást is érő dobása egy meccsen.
 \item Első 9 nyíl átlaga:
 
 Egy játékos első 3 körének, azaz az eldobott első 9 nyilának az átlaga.
 \item Első, második és harmadik nyíl átlag értéke:
 
-Egy játékos által körönként eldobott első, második és harmadik nyilak értékeinek az átlaga a teljes mérkőzésre/legre kivetítve.
+Egy játékos által körönként eldobott első, második és harmadik nyilak értékeinek az átlaga.
 \item Sikeres egy, kettő, és három nyilas kiszállók száma:
 
-Számontartja, hogy a játékos sikeres kiszálló dobásaihoz egy, kettő vagy esetleg három nyíl volt szükséges.
+Számontartja, hogy a játékos sikeres kiszálló dobásaihoz egy, kettő, vagy esetleg három nyíl volt szükséges.
 \item Eltalált tripla 20-ak száma:
 
-Az összes olyan nyíl száma amellyel a játékos a tripla 20-as szektort találta el, azaz az egy nyílból dobható maximális értéket
+Egy játékos összes olyan dobásának a száma, amellyel a játékos a tripla 20-as szektort találta el, azaz az egy nyílból dobható maximális értéket.
 
 \item Körönként dobott 180-ak aránya:
 
@@ -74,130 +62,119 @@ Egy játékos 180-as dobásainak a száma osztva minden általa elvégzett körr
 \end{itemize}
 
 \Section{Az oldalak bemutatása}
-Az alkalmazás több oldalból tevődik össze, de természetesen az oldalak között egyszerű az átjárhatóság. Ez a fejlécnek köszönhető ahol a menüpontokban az összes oldal megtalálható és a fejléc természetesen minden oldalon elérhető.
+Az alkalmazás több oldalból tevődik össze, de természetesen az oldalak között egyszerű az átjárhatóság. Ez a fejlécnek is köszönhető ahol, a menüpontokban az összes oldal megtalálható és a fejléc természetesen minden oldalon elérhető.
 
-Az oldal címére kattintva érhetjük el a kezdő oldalt, mellette pedig menüpontokban szerepelnek a felhasználói adatlap, a játékosok, a versenyek, és a rangsorok oldalaira irányító gombok. A versenyek a játékosok és a mérkőzések külön adatlapokat kaptak, amelyek szintén külön oldalon érhetőek el.
-Az oldalakon található legtöbb információ linkelve van a hozzájuk tartozó oldallal.
-
-\subsection{Nyitó oldal}
-A nyitó oldallal mindig a weblap megnyitásakor találkozunk, ahol a már meglévő felhasználóknak lehetőségük van bejelentkezni az új felhasználók pedig egy regisztrációt követően tudnak belépni az alkalmazásba. A fent említett funkciók és oldalak csak ezt követően érhetőek el érvényes fiókkal rendelkező felhasználók számára.
-Például egy mérkőzésre rákattintva annak az adatlapját érhetjük el, ahol minden a mérkőzéssel kapcsolatos adat és információ megtalálható a feldolgozott statisztikákkal együtt. Ugyanez igaz a játékosokra és a tornákra is, mivel ha a nevükre rákattintunk, akkor megjelenik az adott játékos vagy torna adatlapja.
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.3]{images/LandingPage.drawio.png}
-\caption{A nyitó oldal vázlata}
-\label{fig:cimer}
-\end{figure}
+Az oldal emblémájára kattintva érhetjük el a kezdő oldalt, mellette pedig menüpontokban szerepelnek a felhasználói adatlap, a játékosok, és a versenyek oldalaira irányító gombok. A versenyek a játékosok és a mérkőzések külön adatlapokat kaptak, amelyek szintén külön oldalon érhetőek el.
 
 \subsection{Kezdő oldal}
-A bejelentkezést követően a kezdő oldalon jelennek meg a még folyamatban lévő tornák külön blokkokban. A blokkban látható a torna neve a létrehozás időpontjával együtt, ezalatt kiírásra kerül még, hogy az adott torna jelenleg milyen fázisban jár és a mellette található „Countinue” gombbal a torna adatlapjára ugrunk, ahonnan folytatni tudjuk a tornát a hátralévő mérkőzések lejátszásával.
+A kezdő oldallal \ref{fig:home} egyből az alkalmazás megnyitásakor találkozunk, itt jelennek meg a még folyamatban lévő versenyek külön blokkokban. A blokkban látható a verseny neve, ezalatt kiírásra kerül még, hogy jelenleg milyen fázisban jár, és a mellette található „Continue” gombbal az adatlapjára ugrunk, ahonnan folytatni tudjuk a versenyt a hátralévő mérkőzések lejátszásával.
 
-Amennyiben a felhasználó nem indított még tornát vagy csak éppen nincsen lezáratlan tornája, akkor ezek a blokkok nem jelennek meg. Azonban a kezdő oldalon megtalálható „+ New Tournament” gomb megnyomásával tudunk változtatni ezen az állapoton egy új torna létrehozásával. Itt minden szükséges adat kitöltésével létrehozható torna, amely a lezárásáig, vagy törléséig a korábban leírt módon már meg fog jelenni a kezdő oldalon is.
+Amennyiben a felhasználó nem indított még versenyt vagy csak éppen nincsen lezáratlan versenye, akkor ezek a blokkok nem jelennek meg. Azonban a kezdő oldalon megtalálható „+ New Tournament” gomb megnyomásával tudunk változtatni ezen az állapoton egy új torna létrehozásával. Itt minden szükséges adat kitöltésével létrehozható a torna, amely lezárásáig a korábban leírt módon már meg fog jelenni a kezdő oldalon is.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/HomePage.png}
+\includegraphics[scale=0.4]{images/HomePage.png}
 \caption{A kezdő oldal vázlata}
-\label{fig:cimer}
+\label{fig:home}
 \end{figure}
 
 \subsection{Versenyek oldala}
-A versenyek oldalán tekinthetjük meg a még zajló és a már lezárult versenyeket is. A különböző versenyek külön blokkokban jelennek meg, ezek a blokkok pedig a versenyek egyes alap adatait tartalmazzák, mint például a nevüket, a létrehozás dátumát, valamint a verseny aktuális állapotát, azaz melyik a követkető forduló vagy befejezett verseny esetén a győztest. Az itt megtalálható „Countinue” vagy „Finished” gombokra kattintva az oldal tovább irányít minket a kiválasztott verseny adatlapjára.
+A versenyek oldalán \ref{fig:tournaments} tekinthetjük meg a még zajló és a már lezárult versenyeket is. A különböző versenyek külön blokkokban jelennek meg, ezek a blokkok pedig a versenyek egyes alapvető adatait tartalmazzák, mint például a nevüket és a verseny aktuális állapotát. Az itt megtalálható „Continue” gombra kattintva az oldal tovább irányít minket a kiválasztott verseny adatlapjára.
 
-A kezdőoldalhoz hasonlóan itt is megtalálható egy gomb az új versenyek létrehozásához amely a verseny létrehozás oldalára irányít át. 
+A kezdőoldalhoz hasonlóan itt is megtalálható egy gomb az új versenyek létrehozásához, amely a verseny létrehozás oldalára irányít át. 
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/TournamentsPage.png}
+\includegraphics[scale=0.4]{images/Tournaments.png}
 \caption{A versenyek oldalának vázlata}
-\label{fig:cimer}
+\label{fig:tournaments}
 \end{figure}
 
 \subsection{Verseny oldal}
-A verseny oldalon a kiválasztott verseny adatlapját tekinthetjük meg. Az adatlap tartalmazza a már lejátszott mérkőzések eredményeit, illetve láthatjuk még a verseny lebonyolítása alapján hátralévő mérkőzéseket is. Ezen az oldalon láthatóak az adott verseny statisztikái is, amelyek a lejátszott mérkőzések statisztikái alapján kerülnek kiszámításra. Amennyiben egy versenyt nem kívánunk már nyilván tartan, akkor azt a „Delete Tournament” gombra kattintva törölhetjük az adatbázisból az állapotától (lejátszott vagy aktív) függetlenül.
+A verseny oldalon \ref{fig:tournament} a kiválasztott verseny adatlapját tekinthetjük meg. Az adatlap tartalmazza a verseny mérkőzéseit és a verseny összesített statisztikáját. A mérkőzéseken keresztül tovább tudunk lépni a kiválasztott mérkőzés oldalára.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/TournamentPage.drawio(1).png}
+\includegraphics[scale=0.4]{images/TournamentPage.png}
 \caption{A verseny oldal vázlata}
-\label{fig:cimer}
+\label{fig:tournament}
 \end{figure}
 
 \subsection{Verseny létrehozása oldal}
-A verseny oldalon megtekinthető a versenynaptár. A tornák az időpontjaik alapján kerülnek kilistázásra. Egy tornára rákattintva megtekinthetjük a torna adatlapját ahol további információk szerepelnek a tornáról illetve az eredményei is. Amennyiben még nem került idén megrendezésre az adott torna, akkor az előző évi eredményei is adatai jelennek meg.
+A verseny létrehozása oldalán\ref{fig:newTournament} van lehetőségünk egy új verseny létrehozására. Ehhez az adatok kitöltése szükséges, ami a verseny típusát határozza meg, ezt követően az "Add Players" gombbal tudunk játékosokat hozzáadni a versenyhez. Miután a minden szükséges adatot megfelelően kitöltöttünk a "Create Tournament" gombra kattintva létrehozzuk a versenyt
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/CreateTournamentPage.drawio.png}
+\includegraphics[scale=0.4]{images/NewTournament.png}
 \caption{A verseny létrehozása oldal vázlata}
-\label{fig:cimer}
+\label{fig:newTournament}
 \end{figure}
 
 \subsection{Játékosok oldala}
-A játékosok oldalán az alkalmazásban létrehozott versenyeken résztvevő játékosok találhatók meg, illetve a neveik alapján lehetőség van keresni is közöttük. Egy adott játékost kiválasztva a játékos adatlapját tudjuk elérni egy új oldalon.
+A játékosok oldalán \ref{fig:players} az alkalmazásban létrehozott versenyeken résztvevő játékosok találhatók meg, illetve a neveik alapján lehetőség van keresni is közöttük. Egy adott játékost kiválasztva a játékos adatlapját tudjuk elérni egy új oldalon.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/PlayersPage.drawio.png}
+\includegraphics[scale=0.4]{images/PlayersPage.png}
 \caption{A játékosok oldalának vázlata}
-\label{fig:cimer}
+\label{fig:players}
 \end{figure}
 
 \subsection{Játékos oldal}
-Minden játékos saját adatlappal rendelkezik, ahol az adott játékos statisztikáit tudjuk megtekinteni a már korábban is leírt szempontok szerint. Emellett a játékos eddigi verseny és mérkőzés mérlegét, vagyis a győzelmek és vereségek arányát. Végezetül pedig legutóbbi mérkőzéseinek az eredményeit is megtekinthetjük. Ezek az adatok folyamatosan frissülnek amennyiben a játékos újabb tornákon, illetve mérkőzéseken vesz részt.
+Minden játékos saját adatlappal \ref{fig:player} rendelkezik, ahol az adott játékos statisztikáit tudjuk megtekinteni a már korábban is leírt szempontok szerint.
+Emellett megtekinthetőek a játékos által lejátszott mérkőzések eredményei is.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/PlayerPage.drawio.png}
+\includegraphics[scale=0.4]{images/PlayerPage.png}
 \caption{A játékos oldal vázlata}
-\label{fig:cimer}
+\label{fig:player}
 \end{figure}
 
 \subsection{Mérkőzés oldal}
-A mérkőzés oldal tartalmazza a játékhoz szükséges pont kalkulátort amelybe a dobott pontokat tudjuk beírni az eltalált szektor és a szektoron belül eltalált terület megadásával, ezalapján kerül kiszámításra a dobás értéke ami a játék szabályai alapján kivonásra kerül a játékos pontjaiból és ez a folyamat addig ismétlődik amíg valamelyik meg nem nyeri a mérkőzést.
+A mérkőzés oldal \ref{fig:match} tartalmazza a játékhoz szükséges pont kalkulátort amelybe a dobott pontokat tudjuk beírni az eltalált szektor és a szektoron belül eltalált terület megadásával, ami alapján kiszámításra kerül a dobás értéke, ami a játék szabályai alapján kivonódik a játékos pontjaiból és ez a folyamat addig ismétlődik, amíg valamelyik játékos meg nem nyeri a mérkőzést. A játékosok nevei mellett látható a mérkőzés eddigi eredménye, valamint az aktuális legen belüli pontszámaik.
 
-Ezekből a megadott adatokból kerülnek kiszámításra a statisztikák, amelyeket szintén ezen az oldalon tekinthetünk meg. A statisztikák „klasszikus” módon egy táblázatban jelennek meg, középen a statisztikai szempontok láthatóak tőle bal és jobb oldalra pedig a 2 játékos eredményei az adott statisztikai szempontban.
+Ezekből a megadott adatokból kerülnek kiszámításra a statisztikák, amelyeket szintén ezen az oldalon tekinthetünk meg, középen a statisztikai szempontokkal, a két szélén pedig a két játékos statisztikáival.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/MatchPage.drawio.png}
+\includegraphics[scale=0.4]{images/MatchPage.png}
 \caption{A mérkőzés oldal vázlata}
-\label{fig:cimer}
+\label{fig:match}
 \end{figure}
 
-\subsection{Ranglisták oldala}
-A ranglisták oldalán egy ranglista található, amely a versenyeken résztvevő játékosokat helyezi sorrendbe a különböző statisztikai szempontok alapján, illetve nem csak statisztikai szempontokra szűrhetünk, hanem az egyes versenyekre is.
+\subsection{Bejelentkezési oldal}
+A bejelentkezési \ref{fig:login} oldalon a korábban már regisztrált felhasználók tudnak bejelentkezni az e-mail címük és a jelszavuk megadásával.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/Rankings.drawio.png}
-\caption{A Ranglisták oldalának vázlata}
-\label{fig:cimer}
+\includegraphics[scale=0.4]{images/Login.png}
+\caption{A bejelentkezési oldal vázlata}
+\label{fig:login}
 \end{figure}
 
-\subsection{Felhasználói adatlap oldala}
-A felhasználói adatlap oldalát a sikeres bejelentkezés után tudjuk elérni. Itt megtekinthetőek a regisztrációkor megadott felhasználói adatok a jelszó kivételével. Az adatokat szerkeszteni is tudjuk a jelszóval együtt a profil szerkesztése menüpontban, ehhez szükséges a meglévő jelszó helyes megadása, ha ez a feltétel teljesült, akkor a módosítások sikeresen mentésre kerültek.
+\subsection{Regisztrációs oldal}
+A regisztrációs \ref{fig:register} oldalon azon felhasználók regisztrálhatnak, akik korábban még nem tették meg. Itt egy felhasználónév, e-mail cím, és egy jelszó megadása szükséges a sikeres regisztrációhoz.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/ProfilePage.drawio.png}
-\caption{A felhasználói adatlap oldalának vázlata}
-\label{fig:cimer}
+\includegraphics[scale=0.4]{images/Register.png}
+\caption{A regisztrációs vázlata}
+\label{fig:register}
 \end{figure}
 
 \Section{Adatmodellek bemutatása}
-A program megírása során külön adatmodelleket hoztam létre a játékosok, a versenyek, a mérkőzések, a statisztikák illetve a felhasználók számára. Az alkalmazás ezen adatmodellek alapján képes az adatok feldolgozására és azok küldésére az adatbázis számára, illetve fogadására is az adatbázis irányából. Az alábbi fastruktúra vázolja az alkalmazás felépítését az adatmodellek szempontjából. Egy felhasználó képes létrehozni egy versenyt, amely versenyből származnak a játékosok illetve a mérkőzések, az utóbbiból a statisztikák származnak, mivel azok a mérkőzés adatai alapján kerülnek kiszámításra.
+A program megírása során külön adatmodelleket hoztam létre a játékosok, a versenyek, a mérkőzések, a statisztikák illetve a felhasználók számára. Az alkalmazás ezen adatmodellek alapján képes az adatok feldolgozására és azok küldésére az adatbázis számára, illetve fogadására is az adatbázis irányából. A \ref{fig:graph} -es ábrán látható gráf vázolja az alkalmazás felépítését az adatmodellek szempontjából. Egy felhasználó képes létrehozni egy versenyt, amely hivatkozza a játékosokat, illetve a mérkőzéseket, az utóbbiból a statisztikák származnak, mivel azok a mérkőzés adatai alapján kerülnek kiszámításra.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/DoubleOut_NewClass.drawio(1).png}
+\includegraphics[scale=0.3]{images/Graph.png}
 \caption{Az adatbázis felépítésének vázlata}
-\label{fig:cimer}
+\label{fig:graph}
 \end{figure}
 
-\subsection{Felhasználó adatmodell}
-A felhasználó adatmodell a felhasználók adatainak a tárolására hivatott. A felépítés egyszerű, tartalmaz egy egyedi azonosítót, nevet, email címet, jelszót, illetve egy „isAdmin” és egy token adattagot. Az azonosítót az adatbázis generálja a létrehozáskor, a további adatokat pedig a regisztrációkor adjuk meg. A sikeres regisztráció után ezek az adatok mentésre kerülnek az adatbázisban és a későbbiekben már lehetősége lesz a felhasználónak bejelentkezni az oldalra ezen adatok megadásával.
+\subsection{User modell}
+A User modell a felhasználók adatainak a tárolására hivatott. A felépítése egyszerű, tartalmaz egy egyedi azonosítót, nevet, email címet, jelszót, illetve egy „isAdmin” és egy token adattagot. Az azonosítót az adatbázis generálja a létrehozáskor, a további adatokat pedig a regisztrációkor adjuk meg. A sikeres regisztráció után ezek az adatok mentésre kerülnek az adatbázisban és a későbbiekben már lehetősége lesz a felhasználónak bejelentkezni az oldalra ezen adatok megadásával.
 
 \begin{cpp}
 export const UserSchema = new Schema<User>({
@@ -216,8 +193,8 @@ export const UserSchema = new Schema<User>({
 });
 \end{cpp}
 
-\subsection{Verseny adatmodell}
-A versenyek képezik az alkalmazáson belüli adatmodellek alapját, mivel a verseny létrehozásától függ a játékosok és mérkőzések létrehozása is. Az adatmodell tartalmazza a verseny azonosítóját, a nevét, a típusát a játékosok számát, a mérkőzések szabályait illetve 1 interfészt is a versenyben résztvevő játékosok megadására. A játékosok esetében a résztvevők neveit kell csak megadni, vagyis annyi játékost amennyi a korábban megadott játékosok száma.
+\subsection{Tournament modell}
+A Tournament modell képzi az alkalmazáson belüli adatmodellek alapját, mivel a verseny létrehozásától függ a játékosok és mérkőzések létrehozása is. Az adatmodell tartalmazza a verseny azonosítóját, a nevét, a típusát a játékosok számát, a mérkőzések szabályait illetve 1 interfészt is a versenyben résztvevő játékosok megadására. A játékosok esetében a résztvevők neveit kell csak megadni, vagyis annyi játékost amennyi a korábban megadott játékosok száma.
 
 \begin{cpp}
 export const TournamentSchema = new Schema<Tournament>(
@@ -241,7 +218,6 @@ export const TournamentSchema = new Schema<Tournament>(
     toJSON: {
       virtuals: true,
     },
-
     toObject: {
       virtuals: true,
     },
@@ -250,8 +226,8 @@ export const TournamentSchema = new Schema<Tournament>(
 );
 \end{cpp}
 
-\subsection{Játékos adatmodell}
-A versenyeken résztvevő játékosok adatait a játékos adatmodell segítségével tároljuk. Ez az adatmodell is viszonylag egyszerű felépítésű, az adott játékos azonosítóját, a nevét illetve a verseny és mérkőzés mérlegét tárolja, vagyis a játékos győztes illetve vesztes mérkőzéseinek és versenyeinek a számát.
+\subsection{Player modell}
+A versenyeken résztvevő játékosok adatait a Player modell segítségével tároljuk. Ez az adatmodell is viszonylag egyszerű felépítésű, az adott játékos azonosítóját, a nevét illetve a verseny és mérkőzés mérlegét tárolja, vagyis a játékos győztes, illetve vesztes mérkőzéseinek és versenyeinek a számát.
 
 \begin{cpp}
 export const PlayerSchema = new Schema<Player>(
@@ -265,7 +241,6 @@ export const PlayerSchema = new Schema<Player>(
         toJSON:{
             virtuals:true
         },
-
         toObject:{
             virtuals:true
         },
@@ -274,8 +249,8 @@ export const PlayerSchema = new Schema<Player>(
 );
 \end{cpp}
 
-\subsection{Mérkőzés adatmodell}
-A mérkőzés adatmodell segítségével tudjuk tárolni a lejátszott mérkőzések adatait a mérkőzés azonosítójától kezdve az utolsó eldobott nyíl értékéig. Az adatmodell elsősorban tartalmazza a mérkőzés azonosítóját és annak a versenynek az azonosítóját, amelynek a keretei között lejátszásra kerül a mérkőzés. Emellett nyilvántartjuk még, hogy a mérkőzés a verseny melyik fordulójában került lejátszásra, kiszálló típusát (duplával kell-e kiszállni vagy sem) és az egymás ellen játszó két játékos adatait, vagyis az azonosítójukat, a nevüket, és az eredményüket. Magát a mérkőzés menetét az adatmodellen belül a Leg interfészben tároljuk, amely a nevéből adódóan a lejátszott leg-ek adatait tartalmazza, mint például, hogy hányadik leg-ben járunk, ki a kezdő játékos és ki nyerte a leg-et. Ezen belül található meg Turn interfész amely a körönkénti dobásokat tárolja, vagyis, hogy kidobta azt a kört, illetve, hogy mennyi volt az első, a második és a harmadik nyíl értéke. Ezeken keresztül folyik le egy mérkőzés a megadott szabályok alapján és értelemszerűen az olyan adattagok, mint a mérkőzés győztese, a leg győztese és a két játékos eredménye ezekből származik.
+\subsection{Match modell}
+A Match modell segítségével tudjuk tárolni a lejátszott mérkőzések adatait, a mérkőzés azonosítójától kezdve, az utolsó eldobott nyíl értékéig. Az adatmodell elsősorban tartalmazza a mérkőzés azonosítóját és annak a versenynek az azonosítóját, amelynek a keretei között lejátszásra kerül a mérkőzés. Emellett nyilvántartjuk még, hogy a mérkőzés a verseny melyik fordulójában került lejátszásra, a kiszálló típusát (duplával kell-e kiszállni vagy sem) és az egymás ellen játszó két játékos adatait, vagyis az azonosítójukat, a nevüket, és az eredményüket. Magát a mérkőzés menetét az adatmodellen belül a Leg interfészben tároljuk, amely a nevéből adódóan a lejátszott leg-ek adatait tartalmazza, mint például, hogy hányadik leg-ben járunk, ki a kezdő játékos és ki nyerte a leg-et. Ezen belül található meg Turn interfész amely a körönkénti dobásokat tárolja, vagyis, hogy ki dobta azt a kört, illetve, hogy mennyi volt az első, a második és a harmadik nyíl értéke. Ezeken keresztül folyik le egy mérkőzés a megadott szabályok alapján és értelemszerűen az olyan adattagok, mint a mérkőzés győztese, a leg győztese és a két játékos eredménye ezekből származik.
 
 \begin{cpp}
 export const NewMatchSchema = new Schema<Match>(
@@ -324,8 +299,8 @@ export const NewMatchSchema = new Schema<Match>(
 );
 \end{cpp}
 
-\subsection{Statisztika adatmodell}
-A statisztikai adatmodell a korábban már említett szempontok szerint tárolja a játékosok statisztikáit mérkőzésenként, vagyis egy mérkőzéshez két statisztika tartozik, ami a két játékosé, egy játékoshoz pedig annyi statisztikai tartozik amennyi mérkőzésen részt vett. Amennyiben egy játékos statisztikáit szeretnénk kimutatni akkor minden olyan eltárolt statisztikát kell összesítenünk, amelyben az ő azonosítója szerepel és a versenyek statisztikáinak a kimutatásához ugyanígy összesítenünk kell az adatokat, csak itt a verseny azonosítója alapján.
+\subsection{Stat modell}
+A statisztikai adatmodell a korábban már említett szempontok szerint tárolja a játékosok statisztikáit mérkőzésenként, vagyis egy mérkőzéshez két statisztika tartozik, ami a két játékosé, egy játékoshoz pedig annyi statisztikai tartozik amennyi mérkőzésen részt vett. Amennyiben egy játékos statisztikáit szeretnénk kimutatni, akkor minden olyan eltárolt statisztikát kell összesítenünk, amelyben az ő azonosítója szerepel, és a versenyek statisztikáinak a kimutatásához ugyanígy összesítenünk kell az adatokat, csak itt a verseny azonosítója alapján.
 
 \begin{cpp}
 export const StatSchema = new Schema<Stat>(
@@ -353,7 +328,6 @@ export const StatSchema = new Schema<Stat>(
     toJSON: {
       virtuals: true,
     },
-
     toObject: {
       virtuals: true,
     },
@@ -365,38 +339,38 @@ export const StatSchema = new Schema<Stat>(
 \Section{Az alkalmazás végpontjai}
 Az alkalmazáson belül különböző végpontok segítségével jön létre a kommunikáció. A végpontok segítségével különböző kéréseket tudunk küldeni, az alábbiakban pedig ezeket szeretném bemutatni.
 
-A felhasználók esetében az alkalmazás két Post kérést használ amelyek segítségével új felhasználókat hozhatunk létre vagy bejelentkezhetünk a már meglévőkkel.
+A felhasználók (\ref{fig:userEndpoint}) esetében az alkalmazás két Post kérést használ, amelyek segítségével új felhasználókat hozhatunk létre vagy bejelentkezhetünk a már meglévőkkel.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/User_Vegpontok.drawio.png}
+\includegraphics[scale=0.4]{images/User_Vegpontok.drawio.png}
 \caption{A felhasználók által használt végpontok}
-\label{fig:cimer}
+\label{fig:userEndpoint}
 \end{figure}
 
-A játékosok három Get kérést alkalmaznak, a játékosok lekérdezés, egy játékos lekérdezése azonosító alapján és játékosok keresése miatt.
+A játékosok (\ref{fig:playerEndpoint}) három Get kérést alkalmaznak, a játékosok lekérdezés, egy játékos lekérdezése azonosító alapján, és játékosok keresése miatt.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/Player_Vegpontok.drawio.png}
+\includegraphics[scale=0.4]{images/Player_Vegpontok.drawio.png}
 \caption{A játékosok által használt végpontok}
-\label{fig:cimer}
+\label{fig:playerEndpoint}
 \end{figure}
 
-A versenyeket a játékosokhoz hasonlóan szintén alkalmaznak 3 Get kérést lekérdezésekre és keresésre. Emellett itt megtalálható még egy Post kérés ami az új versenyek rögzítésére szolgál.
+A versenyek (\ref{fig:tournamentEndpoint}) a játékosokhoz hasonlóan szintén alkalmaznak 2 Get kérést lekérdezésekre. Emellett itt megtalálható még egy Post kérés ami az új versenyek rögzítésére szolgál.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/Tournament_Vegpontok.drawio.png}
+\includegraphics[scale=0.4]{images/Tournament_Vegpontok.drawio.png}
 \caption{A versenyek által használt végpontok}
-\label{fig:cimer}
+\label{fig:tournamentEndpoint}
 \end{figure}
 
-A mérkőzések esetében két Get kéréssel tudjuk lekérdezni őket, a harmadik Get kéréssel pedig a még be nem fejezett mérkőzéseket tudjuk folytatni. Ezekmellett a két Put kérés a mérkőzések elindításáért felelős, valamint dobások végrehajtásáért.
+A mérkőzések (\ref{fig:matchEndpoint}) esetében két Get kéréssel tudjuk lekérdezni őket, a harmadik Get kéréssel pedig a még be nem fejezett mérkőzéseket tudjuk folytatni. Ezek mellett a két Put kérés a mérkőzések elindításáért felelős, valamint dobások végrehajtásáért.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{images/Merkozes_Vegpontok.drawio.png}
+\includegraphics[scale=0.4]{images/Merkozes_Vegpontok.drawio.png}
 \caption{A mérkőzések által használt végpontok}
-\label{fig:cimer}
+\label{fig:matchEndpoint}
 \end{figure}

@@ -1,6 +1,5 @@
 \Chapter{Implementáció}
-\Section{A frontend megvalósítása}
-\subsection{Oldalak kapcsolódása - Routing}
+\Section{Oldalak kapcsolódása - Routing}
 Ebben a pontban szeretném szemléltetni az alkalmazás egyes oldalai közötti kapcsolódást. Az olyan adatmodelleknél mint a mérkőzések, a versenyek és a játékosok, az oldalakat két részre osztjuk, ugyanis egyes oldalakon többet is el tudunk érni közülük, míg az adatlapjaik az azonosítójuk segítségével érhető el.
 \begin{cpp}
 const routes: Routes = [
@@ -17,24 +16,28 @@ const routes: Routes = [
   { path: 'matches/:id/onGoing', component: DartsPartyPageComponent },
 ];
 \end{cpp}
-Az itt meghatározott útvonalak határozzák meg, hogy az alkalmazás komponensei, oldalai milyen címen érhetőek el az alkalmazásból.
-\subsection{Szolgáltatások}
-\subsection{Az alkalmazás komponensei}
-\Section{A backend megvalósítása}
-\subsection{Versenyek létrehozása}
-Egy versenyt a regisztrációhoz hasonlóan egy űrlap kitöltésével hozhatjuk létre. Miután kitöltöttük az űrlapot, a backend segítségével az itt megadott adatokból jön létre az új verseny az adatbázisban, azonban egy verseny létrehozásával, nem csupán egy versenyt hozunk létre, hanem létrejönnek a versenyeken résztvevő játékosok is és elkészül az első forduló sorsolása, vagyis a létrejönnek az első mérkőzések is. Ez azért lehetséges, mivel a játékosok és a mérkőzések is csupa olyan rekorddal rendelkeznek, amelyek a versenyből származtatottak. Így a játékosok és a mérkőzések szükkséges rekordjait beállítjuk a verseny megfelelő rekordjának az értékére, az azonosítókat pedig a MongoDB hozza létre.
+Az itt definiált útvonalak határozzák meg, hogy az alkalmazás komponensei, oldalai, milyen címen érhetőek el az alkalmazásból.
+\Section{Versenyek létrehozása}
+Egy versenyt a regisztrációhoz hasonlóan egy űrlap kitöltésével hozhatunk létre. Miután kitöltöttük az űrlapot, a backend segítségével az itt megadott adatokból jön létre az új verseny az adatbázisban, azonban a létrehozásával, nem csupán egy versenyt hozunk létre, hanem létrejönnek a versenyeken résztvevő játékosok is és elkészül az első forduló sorsolása, vagyis a létrejönnek az első mérkőzések. Ez azért lehetséges, mivel a játékosok és a mérkőzések is csupa olyan rekorddal rendelkeznek, amelyek a versenyből hivatkozhatók. Így a játékosok és a mérkőzések szükséges rekordjait beállítjuk a verseny megfelelő rekordjának az értékére, az azonosítókat pedig a MongoDB hozza létre.
 
 A versenyt egy Post kéréssel tudjuk létrehozni ami a következőképpen néz ki:
 \begin{itemize}
 \item Az első lépésben a kért adatok alapján létrejön maga a verseny.
 \begin{cpp}
 router.post(
-  "/new",
-  asyncHandler(async (req, res) => {
-    const { name, type, playersCount, players, points, legs, doubleOut } =
-      req.body;
+ "/new",
+ asyncHandler(async (req, res) => {
+  const {
+  		name,
+		type,
+		playersCount, 
+		players, 
+		points, 
+		legs, 
+		doubleOut 
+    		} = req.body;
 
-    const existingPlayer = await PlayerModel.findOne({ players });
+  const existingPlayer = await PlayerModel.findOne({ players });
     if (existingPlayer) {
       res
         .status(HTTP_BAD_REQUEST)
@@ -42,7 +45,7 @@ router.post(
       return;
     }
 
-    const newTournament: Tournament = {
+  const newTournament: Tournament = {
       id: "",
       name: req.body.name,
       type: req.body.type,
@@ -56,10 +59,9 @@ router.post(
       runnerUp: "",
     };
 
-    console.log("Parsed Tournament Request:", newTournament);
-    const dbTournament = await TournamentModel.create(newTournament);
+  const dbTournament = await TournamentModel.create(newTournament);
 \end{cpp}
-\item Ezt követően a verseny felvétele alatt megadott számú játékos számára is létrejönnek a játékos adatmodell dokumentumok az adatbázisban. 
+\item Ezt követően a verseny felvétele alatt megadott számú játékos számára is létrejönnek a Player modell dokumentumok az adatbázisban. Ehhez a játékosok nevének a megadása szükséges. 
 \begin{cpp}
 let dbPlayers: Player[] = [];
 
@@ -75,12 +77,10 @@ let dbPlayers: Player[] = [];
 
       const dbPlayer = await PlayerModel.create(newPlayer);
       dbPlayers.push(dbPlayer);
-      console.log("Parsed Player Request:", newPlayer, i);
     }
 \end{cpp}
-\item A következő lépésben hajtódik végre a sorsolás, vagyis a játékosokkal, kettesével összehoz mérőzéseket. Amelyek később majd leszimulálhatók lesznek.
+\item A következő lépésben hajtódik végre a sorsolás, vagyis a játékosokkal kettesével generál mérkőzéseket, amelyek később majd leszimulálhatók lesznek.
 \begin{cpp}
-
     let dbMatches: Match[] = [];
 
     for (let i = 0; i < playersCount; i += 2) {
@@ -103,12 +103,9 @@ let dbPlayers: Player[] = [];
 
       const dbMatch = await NewMatchModel.create(newMatch);
       dbMatches.push(dbMatch);
-      console.log("Parsed Match Request:", newMatch);
     }
-
-    console.log("Parsed Tournament Request:", newTournament);
 \end{cpp}
-\item Végül az utolsó lépésben csoportosítjuk az adatokat egy halmazzá, majd pedig ezt az objektumot küldjük el válaszként.
+\item Végül az utolsó lépésben csoportosítjuk az adatokat egy objektumba, majd pedig ezt az objektumot küldjük el válaszként.
 \begin{cpp}
 const Data = {
       tournament: dbTournament,
@@ -118,8 +115,8 @@ const Data = {
     res.send(Data);
 \end{cpp}
 \end{itemize}
-\subsection{Pontkalkulátor -  Mérkőzések lejátszása}
-A pontkalkulátor segítségével tudjuk a létrehozott mérkőzéseket lejátszani. A feladata, hogy az inputról kapott adatokat, vagyis a dobásokat, jól fel tudja dolgozni. Ennek érdekében egy külön osztályt hoztam létre. Az első metódusa a mérkőzés elindításáért felelős, a második metódus dolgozza fel, továbbítja és frissíti az adatokat a mérkőzésben.
+\Section{Pontkalkulátor -  Mérkőzések lejátszása}
+A pontkalkulátor segítségével tudjuk a létrehozott mérkőzéseket lejátszani. A feladata, hogy az inputról kapott adatokat, vagyis a dobásokat, jól fel tudja dolgozni. Ennek érdekében egy DartsParty nevű osztályt hoztam létre. Az első metódusa a mérkőzés elindításáért felelős, a második metódus dolgozza fel, továbbítja és frissíti az adatokat a mérkőzésben.
 
 Első lépésben meg kell hívnunk a start() metódust, amely betölti az első üres leget a mérkőzésbe.
 \begin{cpp}
@@ -129,48 +126,488 @@ Első lépésben meg kell hívnunk a start() metódust, amely betölti az első 
   }
 \end{cpp}
 
-A metódust egy Put kéréssel tudjuk meghívni. Amikor ez megtörténik a létrejönnek a statisztikai adattáblák a két játékos számára, majd pedig ezeket rögzítjük a memóriában a mérkőzéssel együtt, ugyanis, a későbbiekben a mérkőzés lejátszásához szükséges függvény is csak akkor fog helyesen lefordfulni, ha az összes kért adat megtalálható a memóriában. 
-\subsection{Statisztikák feldolgozása}
-Ez a fejezet mutatja be a megvalósítás lépéseit.
-Itt lehet az esetlegesen előforduló technikai nehézségeket említeni.
-Be lehet már mutatni a program elkészült részeit.
+A metódust egy Put kéréssel tudjuk meghívni. Amikor ez megtörténik a létrejönnek a statisztikai adattáblák a két játékos számára, majd pedig ezeket rögzítjük a memóriában a mérkőzéssel együtt, ugyanis, a későbbiekben a mérkőzés lejátszásához szükséges függvény is csak akkor fog helyesen lefordulni, ha az összes kért adat megtalálható a memóriában. Ezt követően hívjuk meg a start() metódust az eltárolt mérkőzésre és miután ez végrehajtódott, az adatokat elküldjük az adatbázis számára. Így létrejön az adatbázisban a két statisztikai adattábla és frissül a mérkőzés az új leg-gel.
 
-Meg lehet mutatni az elkészített programkód érdekesebb részeit.
-(Az érdekesebb részek bemutatására kellene szorítkozni.
-Többségében a szöveges leírásnak kellene benne lennie.
-Abból lehet kiindulni, hogy a forráskód a dolgozathoz elérhető, azt nem kell magába a dolgozatba bemásolni, elegendő csak behivatkozni.)
-
-A dolgozatban szereplő forráskódrészletekhez külön vannak programnyelvenként stílusok.
-Python esetében például így néz ki egy formázott kódrészlet.
-\begin{python}
-import sys
-
-if __name__ == '__main__':
-    pass
-\end{python}
-
-A stílusfájlok a \texttt{styles} jegyzékben találhatók.
-A stílusok között szerepel még C++, Java és Rust stílusfájl.
-Ezek használatához a \texttt{dolgozat.tex} fájl elején \texttt{usepackage} paranccsal hozzá kell adni a stílust, majd a stílusfájl nevével megegyező környezetet lehet használni.
-További példaként C++ forráskód esetében ez így szerepel.
 \begin{cpp}
-#include <iostream>
+router.put(
+  "/:matchID/onGoing",
+  asyncHandler(async (req, res) => {
+    const match = await NewMatchModel.findById(req.params.matchID);
+    let dbStats: Stat[] = [];
 
-class Sample : public Object
-{
-    // An empty class definition
-}
+    if (match === null) {
+      console.log("null");
+    } else {
+      const homeStat = new Stat(
+        "",
+        match.tournamentId,
+        match.id,
+        match.homeId,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      );
+
+      const dbHomeStat = await StatModel.create(homeStat);
+      dbStats.push(dbHomeStat);
+
+      const awayStat = new Stat(
+        "",
+        match.tournamentId,
+        match.id,
+        match.awayId,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      );
+
+      const dbAwayStat = await StatModel.create(awayStat);
+      dbStats.push(dbAwayStat);
+      
+      dartsParty = new DartsParty(match, homeStat, awayStat);
+    }
+    
+    console.log(match);
+    try {
+      const matchID = req.params.matchID;
+
+      const updatedMatch = await dartsParty.start();
+
+      const data = {
+        match: updatedMatch,
+        stats: dbStats,
+      };
+
+      await NewMatchModel.findByIdAndUpdate(matchID, updatedMatch);
+      res.send(data);
+    } catch (error) {
+      res.status(500).send("Update Failed");
+    }
+  })
+);
 \end{cpp}
-Stílusfájlokból elegendő csak annyit meghagyni, amennyire a dolgozatban szükség van.
-Más, C szintaktikájú nyelvekhez (mint például a JavaScript és C\#) a Java vagy C++ stílusfájlok átszerkesztésére van szükség.
-(Elegendő lehet csak a fájlnevet átírni, és a fájlban a környezet nevét.)
 
-Nyers adatok, parancssori kimenetek megjelenítéséhez a \texttt{verbatim} környezetet lehet használni.
-\begin{verbatim}
-$ some commands with arguments
-1 2 3 4 5
-$ _
-\end{verbatim}
+Miután elindult a mérkőzés a két játékos elkezdheti a dobásai rögzítését felváltva. Ezt a throw(turn: Turn) metódussal tudjuk megtenni, ami egy Turn objektumot vár bemenetnek, ami jelen esetben egy játékos dobását jelenti egy körben, végezetül pedig majd a mérkőzéssel tér vissza. Miután meghívtuk, a függvény a kapott Turn objektumból kiszámítja az első, a második és a harmadik nyíl értékét lokális változókba és a Turn objektumot hozzáadja a currentLeg-hez.
 
-A kutatás jellegű témáknál ez a fejezet gyakorlatilag kimaradhat.
-Helyette inkább a fő vizsgálati módszerek, kutatási irányok kaphatnak külön-külön fejezeteket.
+\begin{cpp}
+thrown(turn: Turn): Match | undefined {
+    if (
+      this.currentLeg.turns.length === 0 &&
+      this.currentLeg.starterPlayer !== turn.playerId
+    ) {
+      return undefined;
+    }
+    const dart1 = turn.throw1Sector * turn.throw1Multiplier;
+    const dart2 = turn.throw2Sector * turn.throw2Multiplier;
+    const dart3 = turn.throw3Sector * turn.throw3Multiplier;
+    const previousTurn =
+     this.currentLeg.turns?.[this.currentLeg.turns.length - 1]?.playerId;
+    if (previousTurn === undefined || previousTurn !== turn.playerId) {
+      let currentPlayer = turn.playerId;
+      this.currentLeg.turns.push(turn);
+\end{cpp}
+
+Ezt követően két ágra bontjuk a számításokat azalapján, hogy a mérkőzésen duplával kell-e kiszállni vagy sem, azonban ez csak a leg befejezését befolyásolja, a többi adat ettől függetlenül ugyanúgy kerül kiszámításra minden ágon. Miután beléptünk az egyik ágba első sorban ellenőrizzük, hogy melyik volt a dobó játékos és annak az adatait módosítjuk. A játékos pontjait a currentPoint lokális változóban tartjuk számon, amely minden nyíl után módosításra kerül. Először az első nyíl értékét vonjuk le a változóból és ellenőrizzük, hogy ezzel a dobással kiszállt-e a játékos vagyis, hogy a pontjainak az értéke pontosan nulla-e, valamint dupla kiszálló estében dupla szektor, volt-e az eltalált szektor. Amennyiben a játékos kiszállt beállítjuk az azonosítóját a leg győztesének és levonjuk a currentPoint-ot a currentLeg.homePoint vagy currentLeg.awayPoint változóból, attól függően hogy melyik játékos dobott. Ezután kerül meghívásra a startNewLegIfPossible() függvény, amelynek a feladata az, hogy ellenőrizze, hogy ezzel a játékos elérte-e a mérkőzés megnyeréséhez szükséges leg-ek számát, vagyis megnyerte-e a mérkőzést, ha viszont még nem nyerte meg akkor elindítunk egy új leg-et.
+
+\begin{cpp}
+  startNewLegIfpossible() {
+    if (this.match.homeScore === this.match.firstTo) {
+      this.match.winner = this.match.homeId;
+    } else if (this.match.awayScore === this.match.firstTo) {
+      this.match.winner = this.match.awayId;
+    } else {
+      if (this.servicePlayer === this.match.homeId) {
+        this.servicePlayer = this.match.awayId;
+      } else {
+        this.servicePlayer = this.match.homeId;
+      }
+      this.match.legs.push(this.currentLeg);
+      this.currentLeg = new Leg(
+        this.servicePlayer,
+        "",
+        this.match.points,
+        this.match.points,
+        []
+      );
+      this.match.legs.push(this.currentLeg);
+    }
+  }
+\end{cpp}
+
+Abban az esetben, ha a játékos még nem szállt ki az első nyíl eldobása után, akkor levonjuk a második eldobott nyíl értékét és ugyanazokat az ellenőrző lépéseket hajtjuk végre mint az első nyíl esetében. Ezt követi a harmadik nyíl is és amennyiben a játékosnak egyik nyíllal se sikerült kiszállnia, vagyis a körben dobott nyilainak az értéke kevesebb mint a játékos pontszáma, akkor csak egyszerűen levonásra kerül a dobás a játékos pontszámából, ha viszont a dobás értéke több mint a játékos pontszáma, akkor a játékos pontszáma nem változik mivel besokalt, vagyis a dobás értéke 0. Az utolsó lépésben a megváltoztatjuk a dobó játékost a következő játékosra, frissítjük a leg-et és a mérkőzéssel térünk vissza.
+
+\begin{cpp}
+thrown(turn: Turn): Match | undefined {
+    if (
+      this.currentLeg.turns.length === 0 &&
+      this.currentLeg.starterPlayer !== turn.playerId
+    ) {
+      return undefined;
+    }
+    const dart1 = turn.throw1Sector * turn.throw1Multiplier;
+    const dart2 = turn.throw2Sector * turn.throw2Multiplier;
+    const dart3 = turn.throw3Sector * turn.throw3Multiplier;
+    const previousTurn =
+     this.currentLeg.turns?.[this.currentLeg.turns.length - 1]?.playerId;
+    if (previousTurn === undefined || previousTurn !== turn.playerId) {
+      let currentPlayer = turn.playerId;
+      this.currentLeg.turns.push(turn);
+      if (this.match.doubleOut === true) {
+        if (currentPlayer === this.match.homeId) {
+          this.previousHomePoint = this.currentLeg.homePoint;
+          const currentPoint = this.currentLeg.homePoint - dart1;
+          if (currentPoint === 0 && turn.throw1Multiplier === 2) {
+            this.currentLeg.winner = this.match.homeId;
+            this.currentLeg.homePoint = currentPoint;
+            this.match.homeScore++;
+            this.startNewLegIfpossible();
+          } else if (currentPoint > 0) {
+            const currenPoint = currentPoint - dart2;
+            if (currenPoint === 0 && turn.throw2Multiplier === 2) {
+              this.currentLeg.winner = this.match.homeId;
+              this.currentLeg.homePoint = currentPoint;
+              this.match.homeScore++;
+              this.startNewLegIfpossible();
+            } else if (currenPoint > 0) {
+              const currentPoint = currenPoint - dart3;
+              if (currentPoint === 0 && turn.throw3Multiplier === 2) {
+                this.currentLeg.winner = this.match.homeId;
+                this.currentLeg.homePoint = currentPoint;
+                this.match.homeScore++;
+                this.startNewLegIfpossible();
+              } else if (currentPoint > 0) {
+                this.currentLeg.homePoint = currentPoint;
+              }
+            }
+          }
+          currentPlayer = this.match.awayId;
+        } else {
+          this.previousAwayPoint = this.currentLeg.awayPoint;
+          const currentPoint = this.currentLeg.awayPoint - dart1;
+          if (currentPoint === 0 && turn.throw1Multiplier === 2) {
+            this.currentLeg.winner = this.match.awayId;
+            this.currentLeg.awayPoint = currentPoint;
+            this.match.awayScore++;
+            this.startNewLegIfpossible();
+          } else if (currentPoint > 0) {
+            const currenPoint = currentPoint - dart2;
+            if (currenPoint === 0 && turn.throw2Multiplier === 2) {
+              this.currentLeg.winner = this.match.awayId;
+              this.currentLeg.awayPoint = currentPoint;
+              this.match.awayScore++;
+              this.startNewLegIfpossible();
+            } else if (currenPoint > 0) {
+              const currentPoint = currenPoint - dart3;
+              if (currentPoint === 0 && turn.throw3Multiplier === 2) {
+                this.currentLeg.winner = this.match.awayId;
+                this.currentLeg.awayPoint = currentPoint;
+                this.match.awayScore++;
+                this.startNewLegIfpossible();
+              } else if (currentPoint > 0) {
+                this.currentLeg.awayPoint = currentPoint;
+              }
+            }
+          }
+          currentPlayer = this.match.homeId;
+        }
+      } else {
+        if (currentPlayer === this.match.homeId) {
+          this.previousHomePoint = this.currentLeg.homePoint;
+          const currentPoint = this.currentLeg.homePoint - dart1;
+          if (currentPoint === 0) {
+            this.currentLeg.winner = this.match.homeId;
+            this.currentLeg.homePoint = currentPoint;
+            this.match.homeScore++;
+            this.startNewLegIfpossible();
+          } else if (currentPoint > 0) {
+            const currenPoint = currentPoint - dart2;
+            if (currenPoint === 0) {
+              this.currentLeg.winner = this.match.homeId;
+              this.currentLeg.homePoint = currentPoint;
+              this.match.homeScore++;
+              this.startNewLegIfpossible();
+            } else if (currenPoint > 0) {
+              const currentPoint = currenPoint - dart3;
+              if (currentPoint === 0) {
+                this.currentLeg.winner = this.match.homeId;
+                this.currentLeg.homePoint = currentPoint;
+                this.match.homeScore++;
+                this.startNewLegIfpossible();
+              } else if (currentPoint > 0) {
+                this.currentLeg.homePoint = currentPoint;
+              }
+            }
+          }
+          currentPlayer = this.match.awayId;
+        } else {
+          this.previousAwayPoint = this.currentLeg.awayPoint;
+          const currentPoint = this.currentLeg.awayPoint - dart1;
+          if (currentPoint === 0) {
+            this.currentLeg.winner = this.match.awayId;
+            this.currentLeg.awayPoint = currentPoint;
+            this.match.awayScore++;
+            this.startNewLegIfpossible();
+          } else if (currentPoint > 0) {
+            const currenPoint = currentPoint - dart2;
+            if (currenPoint === 0) {
+              this.currentLeg.winner = this.match.awayId;
+              this.currentLeg.awayPoint = currentPoint;
+              this.match.awayScore++;
+              this.startNewLegIfpossible();
+            } else if (currenPoint > 0) {
+              const currentPoint = currenPoint - dart3;
+              if (currentPoint === 0) {
+                this.currentLeg.winner = this.match.awayId;
+                this.currentLeg.awayPoint = currentPoint;
+                this.match.awayScore++;
+                this.startNewLegIfpossible();
+              } else if (currentPoint > 0) {
+                this.currentLeg.awayPoint = currentPoint;
+              }
+            }
+          }
+          currentPlayer = this.match.homeId;
+        }
+      }
+      this.match.legs = [this.currentLeg];
+      return this.match;
+    } else {
+      undefined;
+    }
+  }
+\end{cpp}
+
+A throw(turn: Turn) metódust szintén egy Put kéréssel tudjuk meghívni. Mivel a mérkőzés már el van tárolva a memóriában így nem szükséges azt újra lekérdezni az adatbázisból, csak definiálunk egy Turn objektumot amiben az adatokat továbbítani fogjuk. Ezután meghívjuk a metódust a turn-re és ezt a state változóban tároljuk, ami a visszatérési értékből eredően egy Match objektum lesz. Itt történik a statisztikák kiszámítása is a calculateStatistics(turn: Turn) metódus meghívásával amelyet majd a következő pontban fogok kifejteni.
+
+Ezt követően megkeressük az adatbázisban az adott mérkőzést és statisztikát, majd pedig frissítjük azokat a két függvény visszatérési értékével. Az adatokat egy data objektumba gyűjtjük össze és ezt az objektumot küldjük válaszul.
+
+\begin{cpp}
+router.put(
+  "/:matchID/onGoing/throw",
+  asyncHandler(async (req, res) => {
+    const {
+      playerID,
+      throw1Sector,
+      throw1Multiplier,
+      throw2Sector,
+      throw2Multiplier,
+      throw3Sector,
+      throw3Multiplier,
+    } = req.body;
+    const turn = new Turn(
+      req.body.playerID,
+      req.body.throw1Sector,
+      req.body.throw1Multiplier,
+      req.body.throw2Sector,
+      req.body.throw2Multiplier,
+      req.body.throw3Sector,
+      req.body.throw3Multiplier
+    );
+    const state = dartsParty.thrown(turn);
+    const statistic = dartsParty.calculateStatistics(turn);
+    if (state !== undefined) {
+      await NewMatchModel.findByIdAndUpdate(req.params.matchID, state);
+      await StatModel.findOneAndUpdate(
+        { playerId: req.body.playerID, matchId: req.params.matchID },
+        statistic
+      );
+      const data = {
+        match: state,
+        statistic: statistic,
+      };
+      res.send(data);
+    } else {
+      res.send("Invalid turn!");
+    }
+  })
+);
+\end{cpp}
+
+\Section{Statisztikák feldolgozása}
+Ebben a pontban szeretném bemutatni a statisztikák kiszámításának a megvalósítását. Ahogyan azt az előző pontban is említettem ezt a calculateStatistics(turn: Turn) függvény hajt végre, amit szintén a DartsParty osztályon belül található meg, bemeneti értéknek szintén egy Turn objektumot vár a throw függvényhez hasonlóan, és egy Stat objektummal tér vissza, ami egy mérkőzésen az adott játékos statisztikáit tárolja.
+
+A függvény meghívásakor kiszámításra kerül a 3 dobott nyíl értéke külön külön és egyben is a thrownPoints változóban. Ezután két ágra bomlik a metódus attól függően, hogy melyik játékos volt az adott kör dobó játékosa. Miután beléptünk a két ág egyikére első lépésben módosítjuk azon lokális változókat, amelyek csak úgynevezett "segéd" változók a statisztikák kiszámításához, mint például az egyik játékos által dobott értékek összege, a dobott köreinek a száma, stb.
+
+Ezután sorban haladunk a különböző statisztikai szempontokon és implementáljuk azokat a statisztikai számításokat amelyeket már a 3. fejezet 2. pontjában kifejtettem. 
+
+A statisztikai szempontok közül szeretném kiemelni a kiszálló hatékonyság kiszámítását, mivel ez volt a legösszetetteb. 
+
+\begin{cpp}
+calculateStatistics(turn: Turn): Stat {
+    const dart1 = turn.throw1Sector * turn.throw1Multiplier;
+    const dart2 = turn.throw2Sector * turn.throw2Multiplier;
+    const dart3 = turn.throw3Sector * turn.throw3Multiplier;
+    const thrownPoint = dart1 + dart2 + dart3;
+    if (turn.playerId === this.match.homeId) {
+      this.homeTurnCount++;
+      this.homeSumPoint += thrownPoint;
+      this.homeDart1Sum += dart1;
+      this.homeDart2Sum += dart2;
+      this.homeDart3Sum += dart3;
+      
+      this.homeStat.average = this.homeSumPoint / this.homeTurnCount;
+      
+\end{cpp}
+
+Első sorban ellenőrizzük, hogy a játékos pontszáma kiszállónak számít-e és hány nyíl szükséges hozzá. Ezekhez 3 tömböt hoztam létre az osztály elején amelyek tartalmazzák az 1, 2 és 3 nyilas kiszállókat. Amennyiben a játékos pontszáma kiszállónak számít, akkor a függvény növeli az adott játékos kiszállási lehetőségeinek a számát. Ezután ellenőrzi, hogy a játékos kiszállt-e, vagyis megegyezik-e a dobott pontszáma a kör előtti pontszámával. Amennyiben a játékos kiszállt, akkor növeli a sikeres kiszállóinak a számát és kiszámítja a sikeres kiszállók arányát, a sikeres kiszállók és a lehetséges kiszállási lehetőségek osztásával. A következő lépésben a függvény ellenőrzi, hogy a dobott kiszálló értéke meghaladja-e az eddigi legmagasabb kiszállónak az értékét, amennyiben pedig igen, akkor a jelenlegi kiszállóra módosítja az értéket, ha viszont nem, akkor változatlanul hagyja. Az utolsó lépésben a függvény ellenőrzi, hogy a dobott kiszálló 1,2, vagy 3 nyilas kiszállónak számít-e és amennyiben az egyik ágra belép akkor növeli annak a típusú kiszállóknak a számát.
+
+\begin{cpp}      
+      if (
+        possible3DartsCheckouts.includes(this.previousHomePoint) ||
+        possible2DartsCheckouts.includes(this.previousHomePoint) ||
+        possible1DartCheckout.includes(this.previousHomePoint)
+      ) {
+        this.homePossibleCheckoutCount++;
+        
+        if (this.previousHomePoint === thrownPoint) {
+          this.homeCheckoutCount++;
+          this.homeStat.checkouts =
+            this.homeCheckoutCount / this.homePossibleCheckoutCount;
+          if (thrownPoint > this.homeStat.highestCheckout) {
+            this.homeStat.highestCheckout = thrownPoint;
+          }
+          if (possible3DartsCheckouts.includes(thrownPoint)) {
+            this.homeStat.numberOf3DartCheckouts++;
+          } else if (possible2DartsCheckouts.includes(thrownPoint)) {
+            this.homeStat.numberOf2DartCheckouts++;
+          } else if (possible1DartCheckout.includes(thrownPoint)) {
+            this.homeStat.numberOf1DartCheckouts++;
+          }
+        }
+      }
+      
+\end{cpp}
+
+Innen folytatódik a metódus a 180-as dobások számával és bezárul a körönként dobott 180 értékű dobások hatékonyságával. A számítások végén a függvény visszatér a hazai játékos statisztikáival (homeStat) vagy pedig a vendég játékos statisztikáival (awayStat), attól függően, hogy az adott körben ki volt a dobó játékos.
+
+\begin{cpp}
+      if (thrownPoint === 180) {
+        this.homeStat.numberOf180s++;
+      }
+      if (thrownPoint >= 140 && thrownPoint < 180) {
+        this.homeStat.numberOf140plus++;
+      }
+      if (thrownPoint >= 100 && thrownPoint < 140) {
+        this.homeStat.numberOf100plus++;
+      }
+
+      if (this.homeTurnCount < 4) {
+        this.homeStat.first9DartsAverage =
+          this.homeSumPoint / this.homeTurnCount;
+      }
+
+      this.homeStat.firstDartAvergrage = 
+      	this.homeDart1Sum / this.homeTurnCount;
+      this.homeStat.secondDartAverage = 
+      	this.homeDart2Sum / this.homeTurnCount;
+      this.homeStat.thirdDartAverage = 
+      	this.homeDart3Sum / this.homeTurnCount;
+
+      if (dart1 === 60) {
+        this.homeStat.triple20s++;
+      }
+
+      if (dart2 === 60) {
+        this.homeStat.triple20s++;
+      }
+
+      if (dart3 === 60) {
+        this.homeStat.triple20s++;
+      }
+
+      this.homeStat.percentageOf180PerLeg =
+        this.homeStat.numberOf180s / this.homeTurnCount;
+        
+      return this.homeStat;
+    } else {
+      this.awayTurnCount++;
+      this.awaySumPoint += thrownPoint;
+      this.awayDart1Sum += dart1;
+      this.awayDart2Sum += dart2;
+      this.awayDart3Sum += dart3;
+      
+      this.awayStat.average = this.awaySumPoint / this.awayTurnCount;
+      
+      if (
+        possible3DartsCheckouts.includes(this.previousAwayPoint) ||
+        possible2DartsCheckouts.includes(this.previousAwayPoint) ||
+        possible1DartCheckout.includes(this.previousAwayPoint)
+      ) {
+        this.awayPossibleCheckoutCount++;
+        
+        if (this.previousAwayPoint === thrownPoint) {
+          this.awayCheckoutCount++;
+          console.log("AwayCheckoutCount:", this.awayCheckoutCount);
+          this.awayStat.checkouts =
+            this.awayCheckoutCount / this.awayPossibleCheckoutCount;
+          if (thrownPoint > this.awayStat.highestCheckout) {
+            this.awayStat.highestCheckout = thrownPoint;
+          }
+          if (possible3DartsCheckouts.includes(thrownPoint)) {
+            this.awayStat.numberOf3DartCheckouts++;
+          } else if (possible2DartsCheckouts.includes(thrownPoint)) {
+            this.awayStat.numberOf2DartCheckouts++;
+          } else if (possible1DartCheckout.includes(thrownPoint)) {
+            this.awayStat.numberOf1DartCheckouts++;
+          }
+        }
+      }
+      if (thrownPoint === 180) {
+        this.awayStat.numberOf180s++;
+      }
+      if (thrownPoint >= 140 && thrownPoint < 180) {
+        this.awayStat.numberOf140plus++;
+      }
+      if (thrownPoint >= 100 && thrownPoint < 140) {
+        this.awayStat.numberOf100plus++;
+      }
+      if (this.awayTurnCount < 4) {
+        this.awayStat.first9DartsAverage =
+          this.awaySumPoint / this.awayTurnCount;
+      }
+      this.awayStat.firstDartAvergrage = 
+      	this.awayDart1Sum / this.awayTurnCount;
+      this.awayStat.secondDartAverage = 
+      	this.awayDart2Sum / this.awayTurnCount;
+      this.awayStat.thirdDartAverage = 
+      	this.awayDart3Sum / this.awayTurnCount;
+      if (dart1 === 60) {
+        this.awayStat.triple20s++;
+      }
+      if (dart2 === 60) {
+        this.awayStat.triple20s++;
+      }
+      if (dart3 === 60) {
+        this.awayStat.triple20s++;
+      }
+      this.awayStat.percentageOf180PerLeg =
+        this.awayStat.numberOf180s / this.awayTurnCount;
+        
+      return this.awayStat;
+    }
+  }
+\end{cpp}
