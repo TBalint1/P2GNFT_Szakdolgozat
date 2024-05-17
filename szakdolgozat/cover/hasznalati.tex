@@ -1,20 +1,25 @@
 \pagestyle{empty}
 
-\noindent \textbf{\Large CD Használati útmutató}
+\noindent \textbf{\Large A mellékelt CD tartalma}
 
 \vskip 1cm
 
-Ennek a címe lehet például \textit{A mellékelt CD tartalma} vagy \textit{Adathordozó használati útmutató} is.
+A szakdolgozatomhoz mellékelt CD két mappát tartalmaz:
 
-Ez jellemzően csak egy fél-egy oldalas leírás.
-Arra szolgál, hogy ha valaki kézhez kapja a szakdolgozathoz tartozó CD-t, akkor tudja, hogy mi hol van rajta.
-Jellemzően elég csak felsorolni, hogy milyen jegyzékek vannak, és azokban mi található.
-Az elkészített programok telepítéséhez, futtatásához tartozó instrukciók kerülhetnek ide.
-
-A CD lemezre mindenképpen rá kell tenni
 \begin{itemize}
-\item a dolgozatot egy \texttt{dolgozat.pdf} fájl formájában,
-\item a LaTeX forráskódját a dolgozatnak,
-\item az elkészített programot, fontosabb futási eredményeket (például ha kép a kimenet),
-\item egy útmutatót a CD használatához (ami lehet ez a fejezet külön PDF-be vagy MarkDown fájlként kimentve).
+\item A \texttt{P2GNFT_Szakdolgozat} nevű mappában található meg a dolgozat forráskódja és a dolgozat PDF formátumban dolgozat.pdf néven.
+\item Az elkészített programot a \texttt{P2GNFT_DoubleOut} nevű mappa tartalmazza.
 \end{itemize}
+
+A program indítása Visual Studio Code-ból lehetséges és a Node.js telepítése szükséges hozzá.
+
+\begin{itemize}
+\item Nyissuk meg a program mappáját Visual Studio Code-ban és nyissunk meg egy új terminált,
+\item A terminált navigáljuk a \texttt{backend} mappába a \texttt{cd backend} parancs beírásával,
+\item Az \texttt{npm install express cors} parancs beírásával telepítsük az express-t,
+\item Ezután indítsuk el a szervert az \texttt{npm start} paranccsal,
+\item A következő lépésben nyissunk meg egy új terminált és navigáljunk a \texttt{frontend} mappába a \texttt{cd frontend} parancs beírásával,
+\item Miután beléptünk a mappába az \texttt{ng serve -o} parancs beírásával indítsuk el a programot. 
+\end{itemize}
+
+Ezen lépések követésével a program a böngészőben fog elindulni http://localhost:4200/ címen.

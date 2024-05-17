@@ -126,7 +126,7 @@ Első lépésben meg kell hívnunk a start() metódust, amely betölti az első 
   }
 \end{cpp}
 
-A metódust egy Put kéréssel tudjuk meghívni. Amikor ez megtörténik a létrejönnek a statisztikai adattáblák a két játékos számára, majd pedig ezeket rögzítjük a memóriában a mérkőzéssel együtt, ugyanis, a későbbiekben a mérkőzés lejátszásához szükséges függvény is csak akkor fog helyesen lefordulni, ha az összes kért adat megtalálható a memóriában. Ezt követően hívjuk meg a start() metódust az eltárolt mérkőzésre és miután ez végrehajtódott, az adatokat elküldjük az adatbázis számára. Így létrejön az adatbázisban a két statisztikai adattábla és frissül a mérkőzés az új leg-gel.
+A metódust egy Put kéréssel tudjuk meghívni. Amikor ez megtörténik a létrejönnek a statisztikai adattáblák a két játékos számára, majd pedig ezeket rögzítjük a memóriában a mérkőzéssel együtt, ugyanis, a későbbiekben a mérkőzés lejátszásához szükséges függvény is csak akkor fog helyesen lefordulni, ha az összes kért adat megtalálható a memóriában. Ezt követően hívjuk meg a start() metódust az eltárolt mérkőzésre és miután ez végrehajtódott, az adatokat elküldjük az adatbázis számára. Így létrejön az adatbázisban a két statisztikai adattábla és frissül a mérkőzés az új leggel.
 
 \begin{cpp}
 router.put(
@@ -231,7 +231,7 @@ thrown(turn: Turn): Match | undefined {
       this.currentLeg.turns.push(turn);
 \end{cpp}
 
-Ezt követően két ágra bontjuk a számításokat azalapján, hogy a mérkőzésen duplával kell-e kiszállni vagy sem, azonban ez csak a leg befejezését befolyásolja, a többi adat ettől függetlenül ugyanúgy kerül kiszámításra minden ágon. Miután beléptünk az egyik ágba első sorban ellenőrizzük, hogy melyik volt a dobó játékos és annak az adatait módosítjuk. A játékos pontjait a currentPoint lokális változóban tartjuk számon, amely minden nyíl után módosításra kerül. Először az első nyíl értékét vonjuk le a változóból és ellenőrizzük, hogy ezzel a dobással kiszállt-e a játékos vagyis, hogy a pontjainak az értéke pontosan nulla-e, valamint dupla kiszálló estében dupla szektor, volt-e az eltalált szektor. Amennyiben a játékos kiszállt beállítjuk az azonosítóját a leg győztesének és levonjuk a currentPoint-ot a currentLeg.homePoint vagy currentLeg.awayPoint változóból, attól függően hogy melyik játékos dobott. Ezután kerül meghívásra a startNewLegIfPossible() függvény, amelynek a feladata az, hogy ellenőrizze, hogy ezzel a játékos elérte-e a mérkőzés megnyeréséhez szükséges leg-ek számát, vagyis megnyerte-e a mérkőzést, ha viszont még nem nyerte meg akkor elindítunk egy új leg-et.
+Ezt követően két ágra bontjuk a számításokat azalapján, hogy a mérkőzésen duplával kell-e kiszállni vagy sem, azonban ez csak a leg befejezését befolyásolja, a többi adat ettől függetlenül ugyanúgy kerül kiszámításra minden ágon. Miután beléptünk az egyik ágba első sorban ellenőrizzük, hogy melyik volt a dobó játékos és annak az adatait módosítjuk. A játékos pontjait a currentPoint lokális változóban tartjuk számon, amely minden nyíl után módosításra kerül. Először az első nyíl értékét vonjuk le a változóból és ellenőrizzük, hogy ezzel a dobással kiszállt-e a játékos vagyis, hogy a pontjainak az értéke pontosan nulla-e, valamint dupla kiszálló estében dupla szektor, volt-e az eltalált szektor. Amennyiben a játékos kiszállt beállítjuk az azonosítóját a leg győztesének és levonjuk a currentPoint-ot a currentLeg.homePoint vagy currentLeg.awayPoint változóból, attól függően hogy melyik játékos dobott. Ezután kerül meghívásra a startNewLegIfPossible() függvény, amelynek a feladata az, hogy ellenőrizze, hogy ezzel a játékos elérte-e a mérkőzés megnyeréséhez szükséges leg-ek számát, vagyis megnyerte-e a mérkőzést, ha viszont még nem nyerte meg akkor elindítunk egy új leget.
 
 \begin{cpp}
   startNewLegIfpossible() {
@@ -258,24 +258,9 @@ Ezt követően két ágra bontjuk a számításokat azalapján, hogy a mérkőz�
   }
 \end{cpp}
 
-Abban az esetben, ha a játékos még nem szállt ki az első nyíl eldobása után, akkor levonjuk a második eldobott nyíl értékét és ugyanazokat az ellenőrző lépéseket hajtjuk végre mint az első nyíl esetében. Ezt követi a harmadik nyíl is és amennyiben a játékosnak egyik nyíllal se sikerült kiszállnia, vagyis a körben dobott nyilainak az értéke kevesebb mint a játékos pontszáma, akkor csak egyszerűen levonásra kerül a dobás a játékos pontszámából, ha viszont a dobás értéke több mint a játékos pontszáma, akkor a játékos pontszáma nem változik mivel besokalt, vagyis a dobás értéke 0. Az utolsó lépésben a megváltoztatjuk a dobó játékost a következő játékosra, frissítjük a leg-et és a mérkőzéssel térünk vissza.
+Abban az esetben, ha a játékos még nem szállt ki az első nyíl eldobása után, akkor levonjuk a második eldobott nyíl értékét és ugyanazokat az ellenőrző lépéseket hajtjuk végre mint az első nyíl esetében. Ezt követi a harmadik nyíl is és amennyiben a játékosnak egyik nyíllal se sikerült kiszállnia, vagyis a körben dobott nyilainak az értéke kevesebb mint a játékos pontszáma, akkor csak egyszerűen levonásra kerül a dobás a játékos pontszámából, ha viszont a dobás értéke több mint a játékos pontszáma, akkor a játékos pontszáma nem változik mivel besokalt, vagyis a dobás értéke 0. Az utolsó lépésben a megváltoztatjuk a dobó játékost a következő játékosra, frissítjük a leget és a mérkőzéssel térünk vissza.
 
 \begin{cpp}
-thrown(turn: Turn): Match | undefined {
-    if (
-      this.currentLeg.turns.length === 0 &&
-      this.currentLeg.starterPlayer !== turn.playerId
-    ) {
-      return undefined;
-    }
-    const dart1 = turn.throw1Sector * turn.throw1Multiplier;
-    const dart2 = turn.throw2Sector * turn.throw2Multiplier;
-    const dart3 = turn.throw3Sector * turn.throw3Multiplier;
-    const previousTurn =
-     this.currentLeg.turns?.[this.currentLeg.turns.length - 1]?.playerId;
-    if (previousTurn === undefined || previousTurn !== turn.playerId) {
-      let currentPlayer = turn.playerId;
-      this.currentLeg.turns.push(turn);
       if (this.match.doubleOut === true) {
         if (currentPlayer === this.match.homeId) {
           this.previousHomePoint = this.currentLeg.homePoint;
@@ -308,97 +293,6 @@ thrown(turn: Turn): Match | undefined {
         } else {
           this.previousAwayPoint = this.currentLeg.awayPoint;
           const currentPoint = this.currentLeg.awayPoint - dart1;
-          if (currentPoint === 0 && turn.throw1Multiplier === 2) {
-            this.currentLeg.winner = this.match.awayId;
-            this.currentLeg.awayPoint = currentPoint;
-            this.match.awayScore++;
-            this.startNewLegIfpossible();
-          } else if (currentPoint > 0) {
-            const currenPoint = currentPoint - dart2;
-            if (currenPoint === 0 && turn.throw2Multiplier === 2) {
-              this.currentLeg.winner = this.match.awayId;
-              this.currentLeg.awayPoint = currentPoint;
-              this.match.awayScore++;
-              this.startNewLegIfpossible();
-            } else if (currenPoint > 0) {
-              const currentPoint = currenPoint - dart3;
-              if (currentPoint === 0 && turn.throw3Multiplier === 2) {
-                this.currentLeg.winner = this.match.awayId;
-                this.currentLeg.awayPoint = currentPoint;
-                this.match.awayScore++;
-                this.startNewLegIfpossible();
-              } else if (currentPoint > 0) {
-                this.currentLeg.awayPoint = currentPoint;
-              }
-            }
-          }
-          currentPlayer = this.match.homeId;
-        }
-      } else {
-        if (currentPlayer === this.match.homeId) {
-          this.previousHomePoint = this.currentLeg.homePoint;
-          const currentPoint = this.currentLeg.homePoint - dart1;
-          if (currentPoint === 0) {
-            this.currentLeg.winner = this.match.homeId;
-            this.currentLeg.homePoint = currentPoint;
-            this.match.homeScore++;
-            this.startNewLegIfpossible();
-          } else if (currentPoint > 0) {
-            const currenPoint = currentPoint - dart2;
-            if (currenPoint === 0) {
-              this.currentLeg.winner = this.match.homeId;
-              this.currentLeg.homePoint = currentPoint;
-              this.match.homeScore++;
-              this.startNewLegIfpossible();
-            } else if (currenPoint > 0) {
-              const currentPoint = currenPoint - dart3;
-              if (currentPoint === 0) {
-                this.currentLeg.winner = this.match.homeId;
-                this.currentLeg.homePoint = currentPoint;
-                this.match.homeScore++;
-                this.startNewLegIfpossible();
-              } else if (currentPoint > 0) {
-                this.currentLeg.homePoint = currentPoint;
-              }
-            }
-          }
-          currentPlayer = this.match.awayId;
-        } else {
-          this.previousAwayPoint = this.currentLeg.awayPoint;
-          const currentPoint = this.currentLeg.awayPoint - dart1;
-          if (currentPoint === 0) {
-            this.currentLeg.winner = this.match.awayId;
-            this.currentLeg.awayPoint = currentPoint;
-            this.match.awayScore++;
-            this.startNewLegIfpossible();
-          } else if (currentPoint > 0) {
-            const currenPoint = currentPoint - dart2;
-            if (currenPoint === 0) {
-              this.currentLeg.winner = this.match.awayId;
-              this.currentLeg.awayPoint = currentPoint;
-              this.match.awayScore++;
-              this.startNewLegIfpossible();
-            } else if (currenPoint > 0) {
-              const currentPoint = currenPoint - dart3;
-              if (currentPoint === 0) {
-                this.currentLeg.winner = this.match.awayId;
-                this.currentLeg.awayPoint = currentPoint;
-                this.match.awayScore++;
-                this.startNewLegIfpossible();
-              } else if (currentPoint > 0) {
-                this.currentLeg.awayPoint = currentPoint;
-              }
-            }
-          }
-          currentPlayer = this.match.homeId;
-        }
-      }
-      this.match.legs = [this.currentLeg];
-      return this.match;
-    } else {
-      undefined;
-    }
-  }
 \end{cpp}
 
 A throw(turn: Turn) metódust szintén egy Put kéréssel tudjuk meghívni. Mivel a mérkőzés már el van tárolva a memóriában így nem szükséges azt újra lekérdezni az adatbázisból, csak definiálunk egy Turn objektumot amiben az adatokat továbbítani fogjuk. Ezután meghívjuk a metódust a turn-re és ezt a state változóban tároljuk, ami a visszatérési értékből eredően egy Match objektum lesz. Itt történik a statisztikák kiszámítása is a calculateStatistics(turn: Turn) metódus meghívásával amelyet majd a következő pontban fogok kifejteni.
@@ -473,7 +367,7 @@ calculateStatistics(turn: Turn): Stat {
       
 \end{cpp}
 
-Első sorban ellenőrizzük, hogy a játékos pontszáma kiszállónak számít-e és hány nyíl szükséges hozzá. Ezekhez 3 tömböt hoztam létre az osztály elején amelyek tartalmazzák az 1, 2 és 3 nyilas kiszállókat. Amennyiben a játékos pontszáma kiszállónak számít, akkor a függvény növeli az adott játékos kiszállási lehetőségeinek a számát. Ezután ellenőrzi, hogy a játékos kiszállt-e, vagyis megegyezik-e a dobott pontszáma a kör előtti pontszámával. Amennyiben a játékos kiszállt, akkor növeli a sikeres kiszállóinak a számát és kiszámítja a sikeres kiszállók arányát, a sikeres kiszállók és a lehetséges kiszállási lehetőségek osztásával. A következő lépésben a függvény ellenőrzi, hogy a dobott kiszálló értéke meghaladja-e az eddigi legmagasabb kiszállónak az értékét, amennyiben pedig igen, akkor a jelenlegi kiszállóra módosítja az értéket, ha viszont nem, akkor változatlanul hagyja. Az utolsó lépésben a függvény ellenőrzi, hogy a dobott kiszálló 1,2, vagy 3 nyilas kiszállónak számít-e és amennyiben az egyik ágra belép akkor növeli annak a típusú kiszállóknak a számát.
+Elsősorban ellenőrizzük, hogy a játékos pontszáma kiszállónak számít-e és hány nyíl szükséges hozzá. Ezekhez 3 tömböt hoztam létre az osztály elején amelyek tartalmazzák az 1, 2 és 3 nyilas kiszállókat. Amennyiben a játékos pontszáma kiszállónak számít, akkor a függvény növeli az adott játékos kiszállási lehetőségeinek a számát. Ezután ellenőrzi, hogy a játékos kiszállt-e, vagyis megegyezik-e a dobott pontszáma a kör előtti pontszámával. Amennyiben a játékos kiszállt, akkor növeli a sikeres kiszállóinak a számát és kiszámítja a sikeres kiszállók arányát, a sikeres kiszállók és a lehetséges kiszállási lehetőségek osztásával. A következő lépésben a függvény ellenőrzi, hogy a dobott kiszálló értéke meghaladja-e az eddigi legmagasabb kiszállónak az értékét, amennyiben pedig igen, akkor a jelenlegi kiszállóra módosítja az értéket, ha viszont nem, akkor változatlanul hagyja. Az utolsó lépésben a függvény ellenőrzi, hogy a dobott kiszálló 1,2, vagy 3 nyilas kiszállónak számít-e és amennyiben az egyik ágra belép akkor növeli annak a típusú kiszállóknak a számát.
 
 \begin{cpp}      
       if (
