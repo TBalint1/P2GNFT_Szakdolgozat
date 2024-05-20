@@ -1,30 +1,32 @@
 \Chapter{A webalkalmazás technológiai háttere}
-Az alkalmazás technológiai hátterének kiválasztásakor fontos szempont volt, hogy olyan programnyelvekkel készítsem el az alkalmazást, amelyeket kifejezetten Frontend és Backend alkalmazások fejlesztésére használnak. Így esett a választásom az Angular és a Node.js párosára, amelyek a mai webfejlesztésben sűrűn használt programnyelvek, valamint előnyt jelent az is, hogy mindkettő JavaScript alapú keretrendszer. Ezek  mellé  párosult a MongoDB, mint adatbázis amelyet szintén gyakran alkalmaznak webalkalmazások fejlesztésére. 
+Az alkalmazás technológiai hátterének kiválasztásakor fontos szempont volt, hogy olyan programnyelvekkel készítsem el az alkalmazást, amelyeket kifejezetten Frontend és Backend alkalmazások fejlesztésére használnak. Így esett a választásom az Angular és a Node.js párosára, amelyek a mai webfejlesztésben sűrűn használt programnyelvek, valamint előnyt jelent az is, hogy mindkettő JavaScript alapú keretrendszer. Ezek  mellé a MongoDB-t választottam, mint adatbázis amelyet szintén gyakran alkalmaznak webalkalmazások fejlesztésére. 
 \Section{Frontend technológiák}
+Az alkalmazás Frontend oldalán kerülnek megvalósításra az alkalmazás azon komponensei, amit a felhasználók közvetlenül látnak és használnak. A Frontend fejlesztés célja, hogy a felhasználók számára esztétikailag kellemes, felhasználóbarát és interaktív élményt biztosítson. A következő pontokon keresztül szeretném bemutatni azokat a technológiákat, amelyek az alkalmazás Frontend oldalát képzik.
 \subsection{Angular}
 Az Angular \cite{Angular1} egy nyílt forráskódú, TypeScript \cite{TypeScript} nyelven írt, JavaScript keretrendszer. Az Angular, mint keretrendszer, számottevő előnnyel rendelkezik, miközben szabványos struktúrát biztosít a fejlesztők számára, amellyel dolgozhatnak. Lehetővé teszi a felhasználók számára, hogy nagyméretű alkalmazásokat hozzanak létre karbantartható módon. A használata sok előnnyel jár, mivel a keretrendszer alapja, a JavaScript nagyon sok helyen előfordul manapság, viszont önmagában a JavaScript nem teljesen ideális olyan oldalak fejlesztésére, amelyek modularitást, tesztelhetőséget és fejlesztői produktivitást igényelnek. Az egyéb JavaScript alapú keretrendszerek mellett az Angular ilyen, és ehhez hasonló problémákra nyújt megoldást.
 
 Az Angular keretrendszert az alkalmzásom Frontend részének a fejlesztése közben használtam, aminek a segítségével nagyon sok fejlesztési lehetőségem nyílt és a komponens alapú architektúrájának köszönhetően az alkalmazásom dinamikus és átláthatóbb lett.
-\cite{Angular}\newline 
+\cite{Angular}
 
 A HTML és CSS használata véleményem szerint nem szorul különösebb indoklásra és ajánlásra. Ezen két nyelvnek a használata elengedhetetlen manapság a webfejlesztők számárá, hiszen a modern webalkalmazások legnagyobb része már ezeken alapul. A HTML a címkék és törések rendszerének segítségével határozza meg a böngésző számára megjeleníteni kívánt tartalmat. A CSS ezen tartalmaknak a megjelenítését határozza meg amire számos opciónk van (pl.: színek, méretek, pozíciók, betűtípusok, stb.). Ez a két nyelv együttesen segít egyszerű, szövegekből, képekből és hiperhivatkozásokból álló weboldalak létrehozásában.
 \cite{HTML}
 
 \Section{Backend technológiák}
+A Backend oldal feladata az alkalmazás szerveroldali folyamatainak megvalósítása és kezelése. Ez az alkalmazás azon része, amelyet a felhasználók nem látnak közvetlenül, de ez biztosítja az alkalmazás logikáját, adatkezelését és funkcionalitását. Az alábbi pontokban azokat a technológiákat szeretném bemutatni, amelyek segítségével az alkalmazás ezen funkcióit valósítottam meg.
 \subsection{Node.js - Express}
-A Node.js egy nyílt forráskódú, platformok közötti futtatókörnyezet, amely lehetővé teszi a fejlesztők számára, hogy különféle szerveroldali eszközt és alkalmazást készítsenek JavaScriptben. A futtatási időt a böngésző környezetén kívüli használatra szánják (azaz közvetlenül egy számítógépen vagy szerver operációs rendszeren való futtatásra). Mint ilyen, a környezet elhagyja a böngésző-specifikus JavaScript API-kat, és támogatja a hagyományosabb operációs rendszer API-kat, beleértve a HTTP és a fájlrendszer könyvtárakat.
+A Node.js \cite{NodeJs} egy nyílt forráskódú, platformok közötti futtatókörnyezet, amely lehetővé teszi a fejlesztők számára, hogy különféle szerveroldali eszközt és alkalmazást készítsenek JavaScriptben. A futtatási időt a böngésző környezetén kívüli használatra szánják (azaz közvetlenül egy számítógépen vagy szerver operációs rendszeren való futtatásra). Mint ilyen, a környezet elhagyja a böngésző-specifikus JavaScript API-kat, és támogatja a hagyományosabb operációs rendszer API-kat, beleértve a HTTP és a fájlrendszer könyvtárakat.
  
 \begin{itemize}
 \item A Node-ot úgy tervezték, hogy optimalizálja a webes alkalmazások áteresztőképességét és skálázhatóságát, ami jó megoldás számos gyakori webfejlesztési problémára (pl. valós idejű webalkalmazások).
 \item A kódot "egyszerű JavaScriptben" írja, ami azt jelenti, hogy kevesebb időt kell a nyelvek közötti "kontextusváltással" foglalkoznia annak, aki kliens- és szerveroldali kódot egyaránt ír.
-\item A JavaScript egy, a backend oldalon viszonylag új programozási nyelv, és a nyelvtervezésben elért fejlesztések előnyeit élvezheti más hagyományos webszerver-nyelvekhez (pl. Python, PHP stb.) képest. Sok más új és népszerű nyelv fordít/konvertál JavaScriptbe, mint például a TypeScript, CoffeeScript, ClojureScript, Scala, LiveScript stb.
+\item A JavaScript egy, a Backend oldalon viszonylag új programozási nyelv, és a nyelvtervezésben elért fejlesztések előnyeit élvezheti más hagyományos webszerver-nyelvekhez (pl. Python, PHP stb.) képest. Sok más új és népszerű nyelv fordít/konvertál JavaScriptbe, mint például a TypeScript, CoffeeScript, ClojureScript, Scala, LiveScript stb.
 \item  A node csomagkezelő (npm) több százezer újrafelhasználható csomaghoz biztosít hozzáférést. Emellett a legjobb függőségi feloldással rendelkezik, és a build toolchain nagy részét is automatizálhatja.
 \item Elérhető többek között, Microsoft Windows, macOS, Linux, Solaris, FreeBSD, OpenBSD, WebOS és NonStop OS rendszereken. Továbbá számos webtárhely-szolgáltató támogatja, amelyek gyakran speciális infrastruktúrát és dokumentációt biztosítanak a Node-oldalak hosztolásához.
 \end{itemize}
 
-A Node.js-el egyszerű webkiszolgálót hozhatunk létre a Node HTTP csomag segítségével.\newline
+A Node.js-el egyszerű webkiszolgálót hozhatunk létre a Node HTTP csomag segítségével.
 
-Az Express a legnépszerűbb Node webes keretrendszer, és számos más népszerű Node webes keretrendszer alapkönyvtára is, ami mechanizmusokat biztosít a következőkhöz:
+Az Express \cite{Express} a legnépszerűbb Node webes keretrendszer, és számos más népszerű Node webes keretrendszer alapkönyvtára is, ami mechanizmusokat biztosít a következőkhöz:
 
 \begin{itemize}
 \item Kezelőprogramok írása különböző HTTP igékkel rendelkező kérésekhez, különböző URL-útvonalakon,
@@ -34,9 +36,9 @@ Az Express a legnépszerűbb Node webes keretrendszer, és számos más népszer
 \end{itemize}
 
 
-Míg az Express maga meglehetősen minimalista, a fejlesztők kompatibilis middleware-csomagokat hoztak létre szinte bármilyen webfejlesztési probléma megoldására. Vannak könyvtárak a cookie-k, munkamenetek, felhasználói bejelentkezések, URL-paraméterek, POST-adatok, biztonsági fejlécek és még sok más adat kezelésére.\newline
+Míg az Express maga meglehetősen minimalista, a fejlesztők kompatibilis middleware-csomagokat hoztak létre szinte bármilyen webfejlesztési probléma megoldására. Vannak könyvtárak a cookie-k, munkamenetek, felhasználói bejelentkezések, URL-paraméterek, POST-adatok, biztonsági fejlécek és még sok más adat kezelésére.
 
-A Node.js és az Express ideális választás olyan alkalmazások esetében amelyeknek a Frontend-je Angular, ezért is esett erre a választásom. Mivel mind a Node.js, mind az Angular JavaScript alapú keretrendszer, ezért kényelmes a közös használatuk és a kódbázis is könnyebben használható fel újra.  Az Angular és a Node.js közötti adatkommunikáció természetes, hiszen mindkettő aszinkron és eseményvezérelt megközelítést alkalmaz. Az Express lehetővé teszi az egyszerű API-k kialakítását, amelyek könnyen integrálhatók az Angular frontendjébe, például a HTTP kérések kezelésére. Node.js és az Express együtt rugalmas megoldást nyújtanak a háttérlogika megvalósítására. A Backend oldalon a különböző metódusok, hívások könnyen tesztelhetőek, egyszerű struktúrával rendelkeznek, így logikailag könnyebb volt az alkalmazás megtervezése és felépítése. 
+A Node.js és az Express ideális választás olyan alkalmazások esetében amelyeknek a Frontend-je Angular, ezért is esett erre a választásom. Mivel mind a Node.js, mind az Angular JavaScript alapú keretrendszer, ezért kényelmes a közös használatuk és a kódbázis is könnyebben használható fel újra.  Az Angular és a Node.js közötti adatkommunikáció természetes, hiszen mindkettő aszinkron és eseményvezérelt megközelítést alkalmaz. Az Express lehetővé teszi az egyszerű API-k kialakítását, amelyek könnyen integrálhatók az Angular Frontendjébe, például a HTTP kérések kezelésére. Node.js és az Express együtt rugalmas megoldást nyújtanak a háttérlogika megvalósítására. A Backend oldalon a különböző metódusok, hívások könnyen tesztelhetőek, egyszerű struktúrával rendelkeznek, így logikailag könnyebb volt az alkalmazás megtervezése és felépítése. 
 
 Az Angular és a Node.js - Express kombinációja ezért egy erőteljes és kényelmes megoldást nyújt a teljes verziós JavaScript alkalmazások fejlesztéséhez. 
 \cite{Node}

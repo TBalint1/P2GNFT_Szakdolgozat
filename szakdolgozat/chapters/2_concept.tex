@@ -1,8 +1,17 @@
 \Chapter{A darts játék}
 
+A fejezet célja, egy általános jellegű ismertetés a dolgozatom témájáról, a dartsról. Az alábbi pontokban szeretném bemutatni a játék történetét és kialakulását, valamint egy mérkőzés lefolyását, egy matematikai modellen és egy folyamatábrán keresztül.
+
 \Section{Kialakulása, története}
 
-A darts Angliából származó játék és sport, melynek a lényege hogy, apró nyilakkal eltaláljuk a céltábla különböző pontértékű szektorait. A táblán összesen 20, plusz 1 szektor található meg. A 20 szektor értéke értelemszerűen 1-től 20-ig határolható be, de a táblán belül megtalálható még két gyűrű is, a belső gyűrű amelyet, ha eltálunk akkor az adott szektor értékének a háromszorosát érjük el egy dobással, a külső gyűrű eltalálásával pedig a dobás a szektor értékének kétszerese. A plusz 1 szektor a tábla közepén megtalálható kis kör, amelyet a sportban Bullseye-nak, vagy röviden csak Bull-nak nevezünk. Ezt a kört két részre osztjuk fel, a külső Bull értéke 25, a belsőé pedig 50, vagyis dupla 25. \cite{Darts1}\newline
+A darts Angliából származó játék és sport, melynek a lényege, hogy apró nyilakkal eltaláljuk a céltábla különböző pontértékű szektorait. A táblán összesen 20, plusz 1 szektor található meg (\ref{fig:dartboard} ábra). A 20 szektor értéke értelemszerűen 1-től 20-ig határolható be, de a táblán belül megtalálható még két gyűrű is, a belső gyűrű amelyet, ha eltálunk akkor az adott szektor értékének a háromszorosát érjük el egy dobással, a külső gyűrű eltalálásával pedig a dobás a szektor értékének kétszerese. A plusz 1 szektor a tábla közepén megtalálható kis kör, amelyet a sportban Bullseye-nak, vagy röviden csak Bull-nak nevezünk. Ezt a kört két részre osztjuk fel, a külső Bull értéke 25, a belsőé pedig 50, vagyis dupla 25. \cite{Darts1}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{images/Dartboard}
+\caption{Egy darts tábla bemutatása}
+\label{fig:dartboard}
+\end{figure}
  
 Egy mérkőzést szettekre, a szetteket legekre, a legeket pedig körökre osztjuk fel. Egy körben minden játékosnak 3 nyíl áll a rendelkezésére és ebből a 3 dobásból a maximálisan megszerezhető pontok száma 180, ezt a tripla 20-as szektor háromszori eltalálásával tudjuk elérni. Egy legben minden játékos 501 (vagy különböző játékmódok esetén akár 301, 701) pontról kezd, ebből kerül kivonásra minden kör után az adott körben dobott pontszámuk. Egy leg megnyeréséhez a 0 pont pontos elérése szükséges, ráadásul a hivatalos mérkőzéseken ez csak úgy szabályos, hogy az utolsó eldobott nyílnak dupla szektort kell eltalálnia. Amint egy játékos olyan pontszámot ér el, amely pontosan elérhető maximum 3 dobásból úgy, hogy az utolsó nyilát dupla szektorba dobja, akkor azt kiszállónak nevezzük. A legmagasabb pontszám amiről ki lehet szállni, a 170, amit a tripla 20-as szektor kétszeres, és végezetül a belső Bull egyszeres eltalálásával (mivel az dupla 25-nek számít) érhető el. Egy leg legkevesebb 9 nyílból nyerhető meg, ennek a megdobására több kombináció is létezik. Egy szett megnyeréséhez általában 3 leg megnyerése szükséges egy játékos számára, azonban a profi dartsban ritkák azok a versenyek amelyeket szettekre játszanak, a nagyobb tornák közül csak a Világbajnokság és a World Grand Prix ilyen. Ezekből adódóan egy mérkőzés megnyeréséhez a szabályzatban meghatározott számú legek vagy szettek száma szükséges. Ezen felsorolt szabályok egy általános mérkőzés típusra vonatkoznak, a játéknak vannak még különféle változatai, amelyekre más szabályok vonatkoznak, valamint a szabályok versenyenként is eltérőek lehetnek.
 
@@ -30,17 +39,20 @@ Az alábbiakban, egy matematikai modellben szeretném szemléltetni azokat a lé
 \item Kiszállás:
 \begin{itemize}
 \item A játékosnak pontosan 0 pontot kell elérnie a kiszálláshoz.
-\item A kiszálló csak akkor érvényes, ha a meghatározott szabályok alapján történik, vagyis ha csak duplával lehet kiszállni, akkor az utolsó eltalált szektornak duplának kell lennie, ha viszont nincs ilyen szabály akkor az utolsó eltalált szektor lehet szimpla, dupla és akár tripla is.
+\item A kiszálló csak akkor érvényes, ha a meghatározott szabályok alapján történik, vagyis ha csak duplával lehet kiszállni, akkor az utolsó eltalált szektornak duplának kell lennie, ha viszont nincs ilyen szabály, akkor az utolsó eltalált szektor lehet szimpla, dupla és akár tripla is.
 \end{itemize}
 \item Játék vége:
 \begin{itemize}
 \item A játék lezárásához valamelyik játékosnak ki kell szállnia.
-\item Amelyik játékos először kiszáll az győz.
+\item Amelyik játékos először kiszáll, az győz.
 \end{itemize}
 \end{enumerate}
+
+A fent felsorolt lépésekhez a készítettem az alábbi folyamatábrát (\ref{fig:flowchart} ábra), ami szintén egy leg menetét mutatja be.
+
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{images/darts_flowchart.drawio}
 \caption{Darts folyamatábrája}
-\label{fig:cimer}
+\label{fig:flowchart}
 \end{figure}
