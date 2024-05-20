@@ -1,6 +1,7 @@
 \Chapter{Implementáció}
+A következő fejezet célja az alkalmazás megvalósításának a bemutatása. Az alábbi alpontokban olyan fontosabb komponensek megvalósítását emelném ki, amelyek elengedhetetlenek ahhoz, hogy az alkalmazás a tervezett funkcióját betöltse. Ezen komponensek közé tartozik a verseny létrehozása, egy mérkőzés lejátszása és a statisztikák kiszámításának a megvalósítása. A felsoroltak mellett azonban, itt szeretném még kiemelni az alkalmazás működéséhez definiált útvonalak bemutatását is.  
 \Section{Oldalak kapcsolódása}
-Ebben a pontban szeretném szemléltetni az alkalmazás egyes oldalai közötti kapcsolódást. Az olyan adatmodelleknél, mint a mérkőzések, a versenyek és a játékosok, az oldalakat két részre osztjuk, ugyanis egyes oldalakon többet is el tudunk érni közülük, míg az adatlapjaik az azonosítójuk segítségével érhető el.
+Az alábbi pontban láthatóak az alkalmazás egyes oldalai közötti kapcsolódások. Az olyan adatmodelleknél, mint a mérkőzések, a versenyek és a játékosok, az oldalakat két részre osztjuk, ugyanis egyes oldalakon többet is el tudunk érni közülük, míg az adatlapjaik az azonosítójuk segítségével érhető el.
 \begin{cpp}
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,7 +19,7 @@ const routes: Routes = [
 \end{cpp}
 Az itt definiált útvonalak határozzák meg, hogy az alkalmazás komponensei, oldalai, milyen címen érhetőek el az alkalmazásból.
 \Section{Versenyek létrehozása}
-Egy versenyt a regisztrációhoz hasonlóan egy űrlap kitöltésével hozhatunk létre. Miután kitöltöttük az űrlapot, a backend segítségével az itt megadott adatokból jön létre az új verseny az adatbázisban, azonban a létrehozásával, nem csupán egy versenyt hozunk létre, hanem létrejönnek a versenyeken résztvevő játékosok is és elkészül az első forduló sorsolása, vagyis a létrejönnek az első mérkőzések. Ez azért lehetséges, mivel a játékosok és a mérkőzések is csupa olyan rekorddal rendelkeznek, amelyek a versenyből hivatkozhatók. Így a játékosok és a mérkőzések szükséges rekordjait beállítjuk a verseny megfelelő rekordjának az értékére, az azonosítókat pedig a MongoDB hozza létre.
+Egy versenyt a regisztrációhoz hasonlóan egy űrlap kitöltésével hozhatunk létre. Miután kitöltöttük az űrlapot, a Backend segítségével az itt megadott adatokból jön létre az új verseny az adatbázisban, azonban a létrehozásával, nem csupán egy versenyt hozunk létre, hanem létrejönnek a versenyeken résztvevő játékosok is és elkészül az első forduló sorsolása, vagyis a létrejönnek az első mérkőzések. Ez azért lehetséges, mivel a játékosok és a mérkőzések is csupa olyan rekorddal rendelkeznek, amelyek a versenyből hivatkozhatók. Így a játékosok és a mérkőzések szükséges rekordjait beállítjuk a verseny megfelelő rekordjának az értékére, az azonosítókat pedig a MongoDB hozza létre.
 
 A versenyt egy Post kéréssel tudjuk létrehozni ami a következőképpen néz ki:
 \begin{itemize}
